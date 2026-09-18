@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+:root{--bg:#FAFBFC;--panel:#FFFFFF;--ink:#14161C;--accent:#4F46E5;--onaccent:#FFFFFF;--mute:#5C6070;--line:#E3E6EC}
+html{scroll-behavior:auto}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:var(--ink);text-decoration:none}a:hover{color:var(--accent)}
+button{font:inherit;cursor:pointer}
+::selection{background:var(--accent);color:var(--onaccent)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@keyframes blink{0%,49%{opacity:1}50%,100%{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+
+<div id="top" style="{{ themeStyle }}" data-dark="{{ dark }}" data-screen-label="NUDO Web">
+<div style="background:var(--bg);color:var(--ink);transition:background .9s cubic-bezier(.4,0,.2,1),color .9s;font-family:'Inter',sans-serif;overflow-x:clip">
+
+<!-- Intro curtain -->
+<div aria-hidden="true" style="position:fixed;inset:0;z-index:100;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;transition:transform .8s cubic-bezier(.7,0,.2,1);transform:{{ introTransform }};pointer-events:none">
+  <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(96px,26vw,420px);letter-spacing:-.06em;line-height:1;animation:rise .7s cubic-bezier(.2,.7,.2,1) both">NUD<span style="color:transparent;-webkit-text-stroke:.03em var(--accent)">O</span></div>
+</div>
+
+<!-- Nav -->
+<header style="position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:16px clamp(20px,4vw,56px);background:color-mix(in srgb,var(--bg) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);transition:background .9s">
+  <a href="#top" style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:24px;letter-spacing:-.04em;color:var(--ink)">NUD<span style="color:transparent;-webkit-text-stroke:1.5px var(--accent)">O</span></a>
+  <nav style="display:flex;gap:4px;font-size:13px;font-weight:500" data-nav>
+    <sc-for list="{{ navItems }}" as="n" hint-placeholder-count="5">
+      <a href="{{ n.href }}" style="padding:8px 12px;border-radius:999px;color:{{ n.color }};background:{{ n.bg }};transition:background .3s,color .3s" style-hover="color:var(--accent)">{{ n.label }}</a>
+    </sc-for>
+  </nav>
+  <a href="#cta" style="font-size:13px;font-weight:600;padding:10px 16px;border-radius:999px;background:var(--ink);color:var(--bg);transition:transform .2s" style-hover="transform:translateY(-2px)">Agenda tu diagnóstico</a>
+</header>
+
+<!-- Hero -->
+<section id="hero" data-screen-label="Hero" style="position:relative;padding:clamp(72px,12vh,140px) clamp(20px,4vw,56px) 64px;max-width:1360px;margin:0 auto">
+  <div style="display:inline-flex;align-items:center;gap:10px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;border:1.5px solid var(--ink);border-radius:999px;transform:rotate(-2deg);box-shadow:3px 3px 0 var(--accent);background:var(--panel)">
+    <span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span>Estudio de IA &amp; software · Lima
+  </div>
+  <h1 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(44px,8vw,128px);line-height:.95;letter-spacing:-.045em;margin:32px 0 0;max-width:16ch;text-wrap:balance">Le quitamos el trabajo <span style="position:relative;display:inline-block;color:transparent;-webkit-text-stroke:.025em var(--accent)">manual</span> a tu empresa.</h1>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:end;margin-top:48px">
+    <p style="font-size:clamp(17px,1.6vw,22px);line-height:1.45;color:var(--mute);margin:0;max-width:44ch;text-wrap:pretty">Cotizaciones, reportes, seguimiento de clientes, conciliaciones. Lo que hoy hace tu gente a mano, lo dejamos corriendo solo.</p>
+    <div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-self:start">
+      <a href="#cta" style="display:inline-flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:18px;padding:18px 28px;border-radius:999px;background:var(--accent);color:var(--onaccent);box-shadow:5px 5px 0 var(--ink);transition:transform .2s,box-shadow .2s" style-hover="transform:translate(2px,2px);box-shadow:2px 2px 0 var(--ink);color:var(--onaccent)">Agenda tu diagnóstico <span aria-hidden="true">→</span></a>
+      <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mute)">30 min · gratis · sin compromiso</span>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:72px;border-radius:16px;overflow:hidden">
+    <div style="background:var(--panel);padding:22px 24px;transition:background .9s"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;letter-spacing:-.03em">6–8 semanas</div><div style="font-size:14px;color:var(--mute);margin-top:4px">a producción</div></div>
+    <div style="background:var(--panel);padding:22px 24px;transition:background .9s"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;letter-spacing:-.03em">Cada semana</div><div style="font-size:14px;color:var(--mute);margin-top:4px">avances en tu operación real</div></div>
+    <div style="background:var(--panel);padding:22px 24px;transition:background .9s"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;letter-spacing:-.03em">Trato directo</div><div style="font-size:14px;color:var(--mute);margin-top:4px">con quienes construyen</div></div>
+  </div>
+</section>
+
+<!-- Marquee -->
+<div aria-hidden="true" style="overflow:hidden;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0;white-space:nowrap">
+  <div style="display:inline-flex;gap:48px;animation:marquee 28s linear infinite;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(40px,6vw,88px);letter-spacing:-.04em;line-height:1;padding-right:48px">
+    <span>Del nudo,</span><span style="color:transparent;-webkit-text-stroke:1.5px var(--accent)">claridad.</span><span>Del nudo,</span><span style="color:transparent;-webkit-text-stroke:1.5px var(--accent)">claridad.</span><span>Del nudo,</span><span style="color:transparent;-webkit-text-stroke:1.5px var(--accent)">claridad.</span>
+    <span>Del nudo,</span><span style="color:transparent;-webkit-text-stroke:1.5px var(--accent)">claridad.</span><span>Del nudo,</span><span style="color:transparent;-webkit-text-stroke:1.5px var(--accent)">claridad.</span><span>Del nudo,</span><span style="color:transparent;-webkit-text-stroke:1.5px var(--accent)">claridad.</span>
+  </div>
+</div>
+
+<!-- 01 Señales -->
+<section id="senales" data-screen-label="01 Señales" style="padding:clamp(80px,12vh,140px) 0 80px">
+  <div style="max-width:1360px;margin:0 auto;padding:0 clamp(20px,4vw,56px);display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:24px">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--accent)">01 — SEÑALES</div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);letter-spacing:-.04em;line-height:1;margin:12px 0 0">¿Te suena?</h2>
+      <p style="font-size:18px;color:var(--mute);margin:16px 0 0;max-width:40ch;text-wrap:pretty">Seis señales de que tu operación depende de personas, no de sistemas.</p>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button onClick="{{ prevCard }}" aria-label="Anterior" style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--ink);background:var(--panel);color:var(--ink);font-size:18px;transition:background .2s" style-hover="background:var(--ink);color:var(--bg)">←</button>
+      <button onClick="{{ nextCard }}" aria-label="Siguiente" style="width:48px;height:48px;border-radius:50%;border:1.5px solid var(--ink);background:var(--panel);color:var(--ink);font-size:18px;transition:background .2s" style-hover="background:var(--ink);color:var(--bg)">→</button>
+    </div>
+  </div>
+  <div ref="{{ railRef }}" onPointerDown="{{ dragStart }}" onPointerMove="{{ dragMove }}" onPointerUp="{{ dragEnd }}" onPointerLeave="{{ dragEnd }}" style="display:flex;gap:28px;overflow-x:auto;padding:56px clamp(20px,4vw,56px) 40px;scroll-snap-type:x proximity;cursor:grab;scrollbar-width:none;user-select:none;-webkit-user-select:none">
+
+    <article style="flex:0 0 320px;scroll-snap-align:start;transform:rotate(-2.5deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="background:#0B141A;color:#E9EDEF;border-radius:20px;padding:0;box-shadow:6px 6px 0 var(--accent);overflow:hidden;height:360px;display:flex;flex-direction:column;font-size:13px">
+        <div style="background:#1F2C34;padding:14px 16px;display:flex;justify-content:space-between;align-items:center"><strong style="font-size:15px">Chats</strong><span style="background:#25D366;color:#0B141A;font-weight:700;padding:2px 8px;border-radius:999px;font-size:12px">47 sin responder</span></div>
+        <div style="padding:8px 0;flex:1">
+          <div style="display:flex;gap:12px;padding:10px 16px;border-bottom:1px solid #1F2C34"><div style="width:36px;height:36px;border-radius:50%;background:#2A3942;flex:none"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><strong>Cliente · Ferretería Loayza</strong><span style="color:#25D366;font-size:11px">09:14</span></div><div style="color:#8696A0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">¿Me confirmas la cotización? Es urgente…</div></div></div>
+          <div style="display:flex;gap:12px;padding:10px 16px;border-bottom:1px solid #1F2C34"><div style="width:36px;height:36px;border-radius:50%;background:#2A3942;flex:none"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><strong>Almacén</strong><span style="color:#8696A0;font-size:11px">08:52</span></div><div style="color:#8696A0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Foto del stock 📎 (versión 3)</div></div></div>
+          <div style="display:flex;gap:12px;padding:10px 16px;border-bottom:1px solid #1F2C34"><div style="width:36px;height:36px;border-radius:50%;background:#2A3942;flex:none"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><strong>Contabilidad</strong><span style="color:#8696A0;font-size:11px">ayer</span></div><div style="color:#8696A0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">¿Quién tiene la última versión del Excel?</div></div></div>
+          <div style="display:flex;gap:12px;padding:10px 16px"><div style="width:36px;height:36px;border-radius:50%;background:#2A3942;flex:none"></div><div style="flex:1;min-width:0"><div style="display:flex;justify-content:space-between"><strong>Gerencia</strong><span style="color:#8696A0;font-size:11px">ayer</span></div><div style="color:#8696A0">¿Y el reporte?</div></div></div>
+        </div>
+      </div>
+      <p style="margin:20px 4px 0;font-size:15px;line-height:1.4;color:var(--mute)"><strong style="color:var(--ink)">Los clientes esperan.</strong> Y el que responde eres tú.</p>
+    </article>
+
+    <article style="flex:0 0 320px;scroll-snap-align:start;transform:rotate(1.8deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="background:#FFFFFF;color:#1F1F1F;border-radius:20px;box-shadow:6px 6px 0 var(--accent);overflow:hidden;height:360px;display:flex;flex-direction:column;font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid #D9D9D9">
+        <div style="background:#107C41;color:#fff;padding:12px 16px;font-family:'Inter',sans-serif;font-size:13px;display:flex;justify-content:space-between;gap:8px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">ventas_FINAL_v7_AHORASI.xlsx</span><span style="opacity:.85;white-space:nowrap">6 editan</span></div>
+        <div style="display:grid;grid-template-columns:28px 1fr 1fr 1fr;flex:1;align-content:start">
+          <div style="background:#F3F3F3;padding:6px;border-bottom:1px solid #E1E1E1"></div><div style="background:#F3F3F3;padding:6px;border-bottom:1px solid #E1E1E1;text-align:center">A</div><div style="background:#F3F3F3;padding:6px;border-bottom:1px solid #E1E1E1;text-align:center">B</div><div style="background:#F3F3F3;padding:6px;border-bottom:1px solid #E1E1E1;text-align:center">C</div>
+          <div style="background:#F3F3F3;padding:6px;text-align:center">1</div><div style="padding:6px;border-left:1px solid #E1E1E1">Cliente</div><div style="padding:6px;border-left:1px solid #E1E1E1">Monto</div><div style="padding:6px;border-left:1px solid #E1E1E1">Estado</div>
+          <div style="background:#F3F3F3;padding:6px;text-align:center">2</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1">Loayza</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1">12,400</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1">???</div>
+          <div style="background:#F3F3F3;padding:6px;text-align:center">3</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1">Grupo M</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1;color:#C00;font-weight:700;background:#FFF1F0">#¡REF!</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1">pagado?</div>
+          <div style="background:#F3F3F3;padding:6px;text-align:center">4</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1">Clínica</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1;color:#C00;font-weight:700;background:#FFF1F0">#¡REF!</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1"></div>
+          <div style="background:#F3F3F3;padding:6px;text-align:center">5</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1;color:#888">TOTAL</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1;color:#C00;font-weight:700">#¡VALOR!</div><div style="padding:6px;border-left:1px solid #E1E1E1;border-top:1px solid #E1E1E1"></div>
+        </div>
+        <div style="padding:10px 16px;border-top:1px solid #E1E1E1;color:#666;font-family:'Inter',sans-serif;font-size:11px">Editado por 6 personas hoy · último cambio hace 2 min</div>
+      </div>
+      <p style="margin:20px 4px 0;font-size:15px;line-height:1.4;color:var(--mute)"><strong style="color:var(--ink)">Nadie sabe cuál es la versión buena.</strong></p>
+    </article>
+
+    <article style="flex:0 0 320px;scroll-snap-align:start;transform:rotate(-1.2deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:20px;box-shadow:6px 6px 0 var(--accent);height:360px;padding:28px;display:flex;flex-direction:column;justify-content:space-between;transition:background .9s">
+        <div style="display:flex;justify-content:space-between;align-items:start"><div><div style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mute)">COTIZACIÓN</div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:32px;letter-spacing:-.03em">COT-0147</div></div><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:6px 10px;border-radius:999px;background:#FFE8D6;color:#8A3B00;transform:rotate(4deg)">enfriándose</span></div>
+        <div style="font-size:14px;color:var(--mute);line-height:1.5">Enviada hace <strong style="color:var(--ink)">6 días</strong>.<br>Sin seguimiento. Sin respuesta.<br>El cliente ya pidió otra a la competencia.</div>
+        <div style="height:8px;border-radius:999px;background:var(--line);overflow:hidden"><div style="width:18%;height:100%;background:var(--accent)"></div></div>
+      </div>
+      <p style="margin:20px 4px 0;font-size:15px;line-height:1.4;color:var(--mute)"><strong style="color:var(--ink)">Las ventas se pierden en el silencio.</strong></p>
+    </article>
+
+    <article style="flex:0 0 320px;scroll-snap-align:start;transform:rotate(2.6deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="background:#FFE86B;color:#2A2410;border-radius:6px;box-shadow:6px 6px 0 var(--accent);height:360px;padding:36px 32px;display:flex;flex-direction:column;justify-content:center;font-family:'Space Grotesk',sans-serif">
+        <div style="font-size:12px;letter-spacing:.1em;opacity:.6;margin-bottom:auto;font-family:'IBM Plex Mono',monospace">RECORDATORIO</div>
+        <div style="font-weight:700;font-size:44px;line-height:1;letter-spacing:-.03em">TODO<br>PASA<br>POR EL<br>GERENTE</div>
+        <div style="margin-top:auto;font-size:14px;opacity:.7">aprobaciones · pagos · cotizaciones · contratos · vacaciones</div>
+      </div>
+      <p style="margin:20px 4px 0;font-size:15px;line-height:1.4;color:var(--mute)"><strong style="color:var(--ink)">Si tú no estás, la empresa se detiene.</strong></p>
+    </article>
+
+    <article style="flex:0 0 320px;scroll-snap-align:start;transform:rotate(-2deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:20px;box-shadow:6px 6px 0 var(--accent);height:360px;padding:28px;display:flex;flex-direction:column;gap:14px;transition:background .9s">
+        <div style="display:flex;justify-content:space-between;align-items:center"><strong style="font-family:'Space Grotesk',sans-serif">Reporte mensual</strong><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mute)">vence hoy</span></div>
+        <div style="height:14px;border-radius:6px;background:var(--line);width:70%"></div>
+        <div style="height:14px;border-radius:6px;background:var(--line);width:90%"></div>
+        <div style="height:80px;border-radius:12px;background:repeating-linear-gradient(135deg,var(--line) 0 8px,transparent 8px 16px);border:1px dashed var(--line)"></div>
+        <div style="height:14px;border-radius:6px;background:var(--line);width:55%"></div>
+        <div style="height:14px;border-radius:6px;background:var(--line);width:80%"></div>
+        <div style="margin-top:auto;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent)">esperando el Excel de contabilidad<span style="animation:blink 1s step-end infinite">_</span></div>
+      </div>
+      <p style="margin:20px 4px 0;font-size:15px;line-height:1.4;color:var(--mute)"><strong style="color:var(--ink)">Decides con datos de hace tres semanas.</strong></p>
+    </article>
+
+    <article style="flex:0 0 320px;scroll-snap-align:start;transform:rotate(1.4deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:20px;box-shadow:6px 6px 0 var(--accent);height:360px;padding:24px;display:flex;flex-direction:column;transition:background .9s">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><strong style="font-family:'Space Grotesk',sans-serif">Octubre</strong><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--mute)">semana 2</span></div>
+        <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;font-size:12px;text-align:center;font-family:'IBM Plex Mono',monospace">
+          <span style="color:var(--mute)">L</span><span style="color:var(--mute)">M</span><span style="color:var(--mute)">M</span><span style="color:var(--mute)">J</span><span style="color:var(--mute)">V</span><span style="color:var(--mute)">S</span><span style="color:var(--mute)">D</span>
+          <span style="padding:8px 0">6</span><span style="padding:8px 0;background:var(--accent);color:var(--onaccent);border-radius:8px 0 0 8px">7</span><span style="padding:8px 0;background:var(--accent);color:var(--onaccent)">8</span><span style="padding:8px 0;background:var(--accent);color:var(--onaccent)">9</span><span style="padding:8px 0;background:var(--accent);color:var(--onaccent);border-radius:0 8px 8px 0">10</span><span style="padding:8px 0;color:var(--mute)">11</span><span style="padding:8px 0;color:var(--mute)">12</span>
+        </div>
+        <div style="margin-top:16px;padding:14px;border-radius:12px;background:var(--bg);border:1px solid var(--line);transition:background .9s"><div style="font-size:13px;font-weight:600">Gerente · vacaciones</div><div style="font-size:12px;color:var(--mute);margin-top:2px">7 – 10 oct · sin señal</div></div>
+        <div style="margin-top:auto;display:flex;gap:6px;flex-wrap:wrap"><span style="font-size:11px;padding:4px 8px;border-radius:999px;background:#FFE1E1;color:#8A0000">3 pagos sin aprobar</span><span style="font-size:11px;padding:4px 8px;border-radius:999px;background:#FFE1E1;color:#8A0000">2 contratos parados</span></div>
+      </div>
+      <p style="margin:20px 4px 0;font-size:15px;line-height:1.4;color:var(--mute)"><strong style="color:var(--ink)">Una semana de vacaciones. Cuatro días de operación perdidos.</strong></p>
+    </article>
+    <div style="flex:0 0 1px"></div>
+  </div>
+</section>
+
+<!-- 02 Cómo trabajamos -->
+<section id="como" data-screen-label="02 Cómo trabajamos" style="padding:clamp(80px,12vh,140px) clamp(20px,4vw,56px);max-width:1360px;margin:0 auto">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--accent)">02 — CÓMO TRABAJAMOS</div>
+  <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);letter-spacing:-.04em;line-height:1;margin:12px 0 0">Del nudo, <span style="color:transparent;-webkit-text-stroke:.03em var(--accent)">claridad.</span></h2>
+  <div style="position:relative;margin-top:56px">
+    <div style="display:flex;justify-content:space-between;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mute);padding:0 4px"><span>tu operación hoy</span><span data-rope-done style="color:var(--accent);opacity:.25;transition:opacity .4s">corre sola ✓</span></div>
+    <svg viewBox="0 0 1200 200" preserveAspectRatio="none" style="width:100%;height:clamp(120px,16vw,200px);display:block;overflow:visible" aria-hidden="true">
+      <path d="M20 100 C60 20 90 180 140 100 C170 55 190 40 220 100 C245 150 255 45 290 100 C320 148 340 70 375 100 C410 130 430 80 470 100 C530 120 560 95 620 100 C720 106 820 100 920 100 L1180 100" fill="none" stroke="var(--line)" stroke-width="3" stroke-linecap="round"/>
+      <path data-rope d="M20 100 C60 20 90 180 140 100 C170 55 190 40 220 100 C245 150 255 45 290 100 C320 148 340 70 375 100 C410 130 430 80 470 100 C530 120 560 95 620 100 C720 106 820 100 920 100 L1180 100" fill="none" stroke="var(--accent)" stroke-width="4" stroke-linecap="round" pathLength="1" stroke-dasharray="1" stroke-dashoffset="1"/>
+      <circle data-node cx="140" cy="100" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="3"/>
+      <circle data-node cx="620" cy="100" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="3"/>
+      <circle data-node cx="1180" cy="100" r="9" fill="var(--bg)" stroke="var(--accent)" stroke-width="3"/>
+    </svg>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px;margin-top:16px">
+      <div style="padding:28px;border-radius:20px;background:var(--panel);border:1px solid var(--line);transition:background .9s">
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:40px;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px var(--ink)">1</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--mute)">30 min</span></div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:24px;letter-spacing:-.02em;margin:20px 0 8px">Diagnóstico</h3>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:var(--mute);text-wrap:pretty">Mapeamos dónde se traba tu operación y qué vale la pena automatizar primero.</p>
+      </div>
+      <div style="padding:28px;border-radius:20px;background:var(--panel);border:1px solid var(--line);transition:background .9s">
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:40px;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px var(--ink)">2</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 10px;border-radius:999px;border:1px solid var(--line);color:var(--mute)">semanas 1–7</span></div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:24px;letter-spacing:-.02em;margin:20px 0 8px">Construcción</h3>
+        <p style="margin:0;font-size:15px;line-height:1.5;color:var(--mute);text-wrap:pretty">Avances cada semana, probados en tu operación real. Sin sorpresas al final.</p>
+      </div>
+      <div data-step3 style="position:relative;overflow:hidden;padding:28px;border-radius:20px;background:var(--panel);color:var(--ink);border:1px solid var(--line);transition:background .9s,color .9s">
+        <div data-step3-fill aria-hidden="true" style="position:absolute;inset:0;background:var(--ink);transform:scaleY(0);transform-origin:top;will-change:transform;pointer-events:none"></div>
+        <div style="position:relative">
+        <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:40px;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px var(--accent)">3</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 10px;border-radius:999px;background:var(--accent);color:var(--onaccent)">semanas 6–8</span></div>
+        <h3 style="font-family:'Space Grotesk',sans-serif;font-size:24px;letter-spacing:-.02em;margin:20px 0 8px">Producción</h3>
+        <p style="margin:0;font-size:15px;line-height:1.5;opacity:.8;text-wrap:pretty">Corre solo. Tu equipo lo usa todos los días; nosotros lo cuidamos.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 03 Test terminal -->
+<section id="test" data-screen-label="03 Test" style="padding:clamp(80px,12vh,140px) clamp(20px,4vw,56px);max-width:1360px;margin:0 auto">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:48px;align-items:center">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--accent)">03 — TEST</div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);letter-spacing:-.04em;line-height:1;margin:12px 0 0;text-wrap:balance">¿Kit o Studio? Tres comandos.</h2>
+      <p style="font-size:18px;color:var(--mute);margin:16px 0 0;max-width:38ch;text-wrap:pretty">Un minuto para saber qué te conviene montar primero.</p>
+      <div style="display:inline-block;margin-top:28px;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:8px 14px;border:1.5px solid var(--ink);border-radius:999px;transform:rotate(2deg);box-shadow:3px 3px 0 var(--accent);background:var(--panel)">sin registro · sin correo</div>
+    </div>
+    <div style="background:#0C0D12;color:#D7DAE6;border-radius:18px;box-shadow:8px 8px 0 var(--accent);font-family:'IBM Plex Mono',monospace;font-size:14px;line-height:1.7;overflow:hidden;min-height:420px;display:flex;flex-direction:column">
+      <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:#15171F;border-bottom:1px solid #23262F"><span style="width:11px;height:11px;border-radius:50%;background:#FF5F57"></span><span style="width:11px;height:11px;border-radius:50%;background:#FEBC2E"></span><span style="width:11px;height:11px;border-radius:50%;background:#28C840"></span><span style="margin-left:auto;font-size:11px;color:#6F7385">nudo — diagnóstico</span></div>
+      <div style="padding:20px 22px;flex:1;display:flex;flex-direction:column;gap:6px">
+        <div><span style="color:#6F7385">$</span> nudo scan --empresa=<span style="color:#8FE3B8">la-tuya</span></div>
+        <div style="color:#6F7385">{{ progressBar }} {{ progressLabel }}</div>
+        <sc-for list="{{ termLines }}" as="l" hint-placeholder-count="0">
+          <div style="margin-top:8px"><div style="color:#9AA0B4">› {{ l.q }}</div><div><span style="color:#8FE3B8">[{{ l.key }}]</span> {{ l.a }}</div></div>
+        </sc-for>
+        <sc-if value="{{ showQuestion }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:10px;color:#fff">› {{ question.q }}</div>
+          <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+            <sc-for list="{{ question.opts }}" as="o" hint-placeholder-count="3">
+              <button onClick="{{ o.pick }}" style="text-align:left;background:transparent;border:1px solid #2A2E3B;color:#D7DAE6;padding:10px 14px;border-radius:8px;font-family:inherit;font-size:14px;display:flex;gap:12px;transition:background .15s,border-color .15s" style-hover="background:#1B1E29;border-color:#8FE3B8"><span style="color:#8FE3B8">[{{ o.key }}] ›</span><span>{{ o.a }}</span></button>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{ showResult }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:14px;padding:18px;border-radius:12px;background:#15171F;border:1px solid #2A2E3B">
+            <div style="color:#6F7385;font-size:12px">resultado</div>
+            <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:30px;letter-spacing:-.03em;color:#fff;margin-top:4px">→ {{ result.name }}</div>
+            <div style="color:#9AA0B4;margin-top:6px;font-family:'Inter',sans-serif;font-size:14px;line-height:1.5">{{ result.text }}</div>
+            <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;align-items:center">
+              <a href="#cta" style="display:inline-block;padding:12px 18px;border-radius:999px;background:#fff;color:#0C0D12;font-family:'Inter',sans-serif;font-weight:600;font-size:14px">Agenda tu diagnóstico</a>
+              <button onClick="{{ resetTest }}" style="background:transparent;border:0;color:#6F7385;font-family:inherit;font-size:12px;padding:8px">$ nudo reset</button>
+            </div>
+          </div>
+        </sc-if>
+        <div style="margin-top:auto;color:#6F7385">$ <span style="animation:blink 1s step-end infinite">▌</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 La prueba -->
+<section id="prueba" data-screen-label="04 La prueba" style="padding:clamp(80px,12vh,140px) clamp(20px,4vw,56px);max-width:1360px;margin:0 auto">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--accent)">04 — LA PRUEBA</div>
+  <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);letter-spacing:-.04em;line-height:1;margin:12px 0 0">Ya corre en empresas reales.</h2>
+  <p style="font-size:18px;color:var(--mute);margin:16px 0 0;max-width:44ch;text-wrap:pretty">Cuatro productos en producción, pantalla real. Sin mockups.</p>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;margin-top:48px">
+    <div style="transform:rotate(-1.5deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="border-radius:16px;overflow:hidden;background:#0C0D12;border:1px solid var(--line);box-shadow:6px 6px 0 var(--accent)">
+        <div style="display:flex;align-items:center;gap:6px;padding:10px 12px;background:#15171F"><span style="width:9px;height:9px;border-radius:50%;background:#FF5F57"></span><span style="width:9px;height:9px;border-radius:50%;background:#FEBC2E"></span><span style="width:9px;height:9px;border-radius:50%;background:#28C840"></span><span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6F7385">en producción</span></div>
+        <video src="./app-1.mp4" data-clip="2" autoPlay muted loop playsInline preload="auto" style="display:block;width:100%;height:auto;aspect-ratio:3024/1964;object-fit:contain;background:#0C0D12"></video>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:18px 4px 0"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em">Nudo Enterprise</div><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">01</span></div>
+      <p style="margin:6px 4px 0;font-size:14px;line-height:1.45;color:var(--mute)">De la prospección a la factura: el sistema encuentra a los clientes y administra el negocio completo.</p>
+    </div>
+    <div style="transform:rotate(1.2deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="border-radius:16px;overflow:hidden;background:#0C0D12;border:1px solid var(--line);box-shadow:6px 6px 0 var(--accent)">
+        <div style="display:flex;align-items:center;gap:6px;padding:10px 12px;background:#15171F"><span style="width:9px;height:9px;border-radius:50%;background:#FF5F57"></span><span style="width:9px;height:9px;border-radius:50%;background:#FEBC2E"></span><span style="width:9px;height:9px;border-radius:50%;background:#28C840"></span><span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6F7385">en producción</span></div>
+        <video src="./app-2.mp4" data-clip="2" autoPlay muted loop playsInline preload="auto" style="display:block;width:100%;height:auto;aspect-ratio:3024/1964;object-fit:contain;background:#0C0D12"></video>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:18px 4px 0"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em">Nudo Growth</div><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">02</span></div>
+      <p style="margin:6px 4px 0;font-size:14px;line-height:1.45;color:var(--mute)">El asistente atiende tu WhatsApp, califica y agenda citas solo — y te avisa cuando una conversación necesita una persona.</p>
+    </div>
+    <div style="transform:rotate(-0.8deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="border-radius:16px;overflow:hidden;background:#0C0D12;border:1px solid var(--line);box-shadow:6px 6px 0 var(--accent)">
+        <div style="display:flex;align-items:center;gap:6px;padding:10px 12px;background:#15171F"><span style="width:9px;height:9px;border-radius:50%;background:#FF5F57"></span><span style="width:9px;height:9px;border-radius:50%;background:#FEBC2E"></span><span style="width:9px;height:9px;border-radius:50%;background:#28C840"></span><span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6F7385">en producción</span></div>
+        <video src="./app-3.mp4" data-clip="2" autoPlay muted loop playsInline preload="auto" style="display:block;width:100%;height:auto;aspect-ratio:3024/1964;object-fit:contain;background:#0C0D12"></video>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:18px 4px 0"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em">Nudo Clinic</div><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">03</span></div>
+      <p style="margin:6px 4px 0;font-size:14px;line-height:1.45;color:var(--mute)">La clínica entera en un sistema, manejada como una conversación: escribes o dictas, y el asistente agenda, factura y responde.</p>
+    </div>
+    <div style="transform:rotate(1.6deg);transition:transform .35s cubic-bezier(.2,.7,.2,1)" style-hover="transform:rotate(0) translateY(-6px)">
+      <div style="border-radius:16px;overflow:hidden;background:#0C0D12;border:1px solid var(--line);box-shadow:6px 6px 0 var(--accent)">
+        <div style="display:flex;align-items:center;gap:6px;padding:10px 12px;background:#15171F"><span style="width:9px;height:9px;border-radius:50%;background:#FF5F57"></span><span style="width:9px;height:9px;border-radius:50%;background:#FEBC2E"></span><span style="width:9px;height:9px;border-radius:50%;background:#28C840"></span><span style="margin-left:auto;font-family:'IBM Plex Mono',monospace;font-size:10px;color:#6F7385">en producción</span></div>
+        <video src="./nudo-pet.mp4" data-clip="0" autoPlay muted loop playsInline preload="auto" style="display:block;width:100%;height:auto;aspect-ratio:3024/1964;object-fit:contain;background:#0C0D12"></video>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:18px 4px 0"><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em">Nudo Pet</div><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent)">04</span></div>
+      <p style="margin:6px 4px 0;font-size:14px;line-height:1.45;color:var(--mute)">Cada mascota, cada etapa, cada entrega a tiempo. El Excel maestro se jubiló.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 05 Equipo -->
+<section id="equipo" data-screen-label="05 Equipo" style="padding:clamp(80px,12vh,140px) clamp(20px,4vw,56px);max-width:1360px;margin:0 auto">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:40px;align-items:end">
+    <div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--accent)">05 — EQUIPO</div>
+      <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);letter-spacing:-.04em;line-height:1;margin:12px 0 0">Dos Heads,<br>una red.</h2>
+      <p style="font-size:18px;color:var(--mute);margin:16px 0 0;max-width:36ch;text-wrap:pretty">Respaldados por una red de los mejores consultores y desarrolladores del mercado peruano.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+      <div style="transform:rotate(-2deg);transition:transform .35s" style-hover="transform:rotate(0)">
+        <div style="aspect-ratio:4/5;border-radius:18px;overflow:hidden;filter:grayscale(1);transition:filter .5s;box-shadow:6px 6px 0 var(--accent)" style-hover="filter:grayscale(0)"><image-slot id="rodrigo" shape="rect" src="./head-2.jpg" placeholder="Foto Rodrigo"></image-slot></div>
+        <div style="margin-top:16px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em">Rodrigo Gamboa</div>
+        <div style="font-size:13px;color:var(--mute)">Head de Negocio</div>
+      </div>
+      <div style="transform:rotate(1.5deg) translateY(24px);transition:transform .35s" style-hover="transform:rotate(0) translateY(24px)">
+        <div style="aspect-ratio:4/5;border-radius:18px;overflow:hidden;filter:grayscale(1);transition:filter .5s;box-shadow:6px 6px 0 var(--accent)" style-hover="filter:grayscale(0)"><image-slot id="jhon" shape="rect" src="./head-1.jpg" placeholder="Foto Jhon"></image-slot></div>
+        <div style="margin-top:16px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;letter-spacing:-.02em">Jhon Abou</div>
+        <div style="font-size:13px;color:var(--mute)">Head de Tecnología · IA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 06 Qué montamos (morph oscuro) -->
+<section id="oferta" data-screen-label="06 Qué montamos" style="padding:clamp(100px,14vh,160px) clamp(20px,4vw,56px) clamp(80px,12vh,140px);max-width:1360px;margin:0 auto">
+  <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;color:var(--accent)">06 — QUÉ MONTAMOS</div>
+  <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,5vw,72px);letter-spacing:-.04em;line-height:1;margin:12px 0 0;text-wrap:balance">Dos formas de empezar.</h2>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;margin-top:48px">
+    <div style="position:relative;padding:40px;border-radius:28px;background:var(--panel);border:1px solid var(--line);display:flex;flex-direction:column;gap:24px;transition:background .9s;box-shadow:8px 8px 0 var(--accent)">
+      <span style="position:absolute;top:-16px;left:32px;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:8px 14px;border-radius:999px;background:var(--accent);color:var(--onaccent);transform:rotate(-3deg)">lo más pedido</span>
+      <div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:48px;letter-spacing:-.04em;line-height:1">Kit</div><div style="font-size:15px;color:var(--mute);margin-top:6px">Para empresas pequeñas y medianas</div></div>
+      <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;font-size:15px">
+        <li style="display:flex;gap:12px"><span style="color:var(--accent)">■</span>Un proceso crítico, automatizado de punta a punta</li>
+        <li style="display:flex;gap:12px"><span style="color:var(--accent)">■</span>En producción en 6–8 semanas</li>
+        <li style="display:flex;gap:12px"><span style="color:var(--accent)">■</span>Avances cada semana, trato directo</li>
+        <li style="display:flex;gap:12px"><span style="color:var(--accent)">■</span>Precio cerrado · se define en el diagnóstico</li>
+      </ul>
+      <a href="#cta" style="margin-top:auto;align-self:start;padding:14px 22px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:600;font-size:15px;transition:transform .2s" style-hover="transform:translateY(-2px);color:var(--bg)">Empezar con Kit →</a>
+    </div>
+    <div style="padding:40px;border-radius:28px;background:transparent;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:24px">
+      <div><div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:48px;letter-spacing:-.04em;line-height:1;color:transparent;-webkit-text-stroke:1.5px var(--ink)">Studio</div><div style="font-size:15px;color:var(--mute);margin-top:6px">Para grandes empresas y Estado</div></div>
+      <ul style="list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;font-size:15px">
+        <li style="display:flex;gap:12px"><span style="color:var(--accent)">□</span>Software a medida, varios procesos y áreas</li>
+        <li style="display:flex;gap:12px"><span style="color:var(--accent)">□</span>Equipo dedicado de la red NUDO</li>
+        <li style="display:flex;gap:12px"><span style="color:var(--accent)">□</span>Integración con tus sistemas actuales</li>
+        <li style="display:flex;gap:12px"><span style="color:var(--accent)">□</span>Alcance y precio definidos en el diagnóstico</li>
+      </ul>
+      <a href="#cta" style="margin-top:auto;align-self:start;padding:14px 22px;border-radius:999px;border:1.5px solid var(--ink);color:var(--ink);font-weight:600;font-size:15px;transition:background .2s,color .2s" style-hover="background:var(--ink);color:var(--bg)">Hablar de Studio →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CTA final -->
+<section id="cta" data-screen-label="CTA final" style="padding:clamp(80px,12vh,140px) clamp(20px,4vw,56px);max-width:1360px;margin:0 auto;text-align:center">
+  <h2 style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(40px,7vw,112px);letter-spacing:-.045em;line-height:.95;margin:0;text-wrap:balance">Empecemos por<br>deshacer <span style="color:transparent;-webkit-text-stroke:.025em var(--accent)">un nudo.</span></h2>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:40px">
+    <a href="mailto:hola@nudo-ai.com?subject=Diagn%C3%B3stico%20NUDO" style="display:inline-flex;align-items:center;gap:12px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px;padding:20px 32px;border-radius:999px;background:var(--accent);color:var(--onaccent);box-shadow:6px 6px 0 var(--ink);transition:transform .2s,box-shadow .2s" style-hover="transform:translate(3px,3px);box-shadow:2px 2px 0 var(--ink);color:var(--onaccent)">Agenda tu diagnóstico →</a>
+    <span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mute)">30 min · gratis · sin compromiso · hola@nudo-ai.com</span>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer style="padding:40px clamp(20px,4vw,56px) 32px;border-top:1px solid var(--line);overflow:hidden">
+  <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(120px,24vw,400px);letter-spacing:-.06em;line-height:.85;text-align:center;user-select:none">NUD<span style="color:transparent;-webkit-text-stroke:.03em var(--accent)">O</span></div>
+  <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px 24px;margin-top:32px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--mute)">
+    <span>NUDO AI S.A.C.S · RUC 20616280806</span>
+    <span>Lima, PE · 12°02′S 77°01′O</span>
+    <a href="mailto:hola@nudo-ai.com" style="color:var(--mute)">hola@nudo-ai.com</a>
+  </div>
+</footer>
+
+<!-- Theme switcher (prototipo · encuesta de paletas) -->
+<sc-if value="{{ showSwitcher }}" hint-placeholder-val="{{ true }}">
+<div style="position:fixed;right:16px;bottom:16px;z-index:60;display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:999px;background:var(--panel);border:1px solid var(--line);box-shadow:0 8px 24px rgba(0,0,0,.12);transition:background .9s">
+  <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;color:var(--mute);padding:0 4px">PALETA</span>
+  <sc-for list="{{ palettes }}" as="p" hint-placeholder-count="5">
+    <button onClick="{{ p.pick }}" title="{{ p.name }}" aria-label="{{ p.name }}" style="width:26px;height:26px;border-radius:50%;border:2px solid {{ p.ring }};background:linear-gradient(135deg,{{ p.bg }} 50%,{{ p.accent }} 50%);padding:0;transition:transform .2s" style-hover="transform:scale(1.15)"></button>
+  </sc-for>
+</div>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;default&quot;:&quot;porcelana&quot;,&quot;options&quot;:[&quot;porcelana&quot;,&quot;carbon&quot;,&quot;medianoche&quot;,&quot;pizarra&quot;,&quot;lino&quot;],&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Paleta (encuesta en curso)&quot;},&quot;showSwitcher&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototipo&quot;},&quot;showIntro&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Prototipo&quot;}}">
+class Component extends DCLogic {
+  state = { theme: null, dark: false, intro: true, active: 'hero', answers: [] };
+  themes = {
+    porcelana: { name: 'Porcelana', bg: '#FAFBFC', panel: '#FFFFFF', ink: '#14161C', accent: '#4F46E5', onaccent: '#FFFFFF', mute: '#5C6070', line: '#E3E6EC',
+      d: { bg: '#0F1117', panel: '#171A23', ink: '#F4F5F9', accent: '#8B84FF', onaccent: '#0F1117', mute: '#A2A7B8', line: '#262A36' } },
+    carbon: { name: 'Carbón', bg: '#0B0B0C', panel: '#151517', ink: '#F5F3EF', accent: '#FF4F1F', onaccent: '#0B0B0C', mute: '#A19E98', line: '#26262A',
+      d: { bg: '#F5F3EF', panel: '#FFFFFF', ink: '#0B0B0C', accent: '#E8431A', onaccent: '#FFFFFF', mute: '#5E5B55', line: '#DDD9D2' } },
+    medianoche: { name: 'Medianoche', bg: '#0A0E1B', panel: '#121729', ink: '#EEF1FA', accent: '#5D7CFF', onaccent: '#0A0E1B', mute: '#9CA4C2', line: '#232A45',
+      d: { bg: '#F2F4FB', panel: '#FFFFFF', ink: '#0A0E1B', accent: '#3555E6', onaccent: '#FFFFFF', mute: '#4F5878', line: '#D9DDEC' } },
+    pizarra: { name: 'Pizarra', bg: '#101214', panel: '#191C20', ink: '#F1F4F4', accent: '#2FD6BC', onaccent: '#101214', mute: '#9AA3A5', line: '#272C31',
+      d: { bg: '#F1F5F4', panel: '#FFFFFF', ink: '#101214', accent: '#0FA98F', onaccent: '#FFFFFF', mute: '#4D5A5A', line: '#D6DEDC' } },
+    lino: { name: 'Lino', bg: '#F4F1EA', panel: '#FFFDF8', ink: '#1B1814', accent: '#D64818', onaccent: '#FFFFFF', mute: '#6B645A', line: '#E2DCCF',
+      d: { bg: '#1B1814', panel: '#25211B', ink: '#F4F1EA', accent: '#FF6A3D', onaccent: '#1B1814', mute: '#ADA498', line: '#37312A' } }
+  };
+  questions = [
+    { q: '¿Cuántas personas trabajan en tu empresa?', opts: ['Menos de 30', 'Entre 30 y 200', 'Más de 200, o somos entidad pública'] },
+    { q: '¿Dónde vive hoy tu información?', opts: ['WhatsApp, correo y Excel', 'Un sistema que nadie usa completo', 'Varios sistemas que no se hablan'] },
+    { q: '¿Qué te quita más tiempo?', opts: ['Cotizar y responder clientes', 'Consolidar reportes', 'Coordinar entre áreas'] }
+  ];
+  railRef = React.createRef();
+  drag = null;
+
+  componentDidMount() {
+    this.introT = setTimeout(() => this.setState({ intro: false }), 1500);
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const ids = ['hero', 'senales', 'como', 'test', 'prueba', 'equipo', 'oferta'];
+    this.io = new IntersectionObserver(es => {
+      es.forEach(e => { if (e.isIntersecting) this.setState({ active: e.target.id }); });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    ids.forEach(id => { const el = document.getElementById(id); if (el) this.io.observe(el); });
+    // scroll pasivo: morph oscuro + cuerda (scrub corto, sin pin, sin dependencia externa)
+    const rope = document.querySelector('[data-rope]');
+    const nodes = document.querySelectorAll('[data-node]');
+    const done = document.querySelector('[data-rope-done]');
+    const of = document.getElementById('oferta');
+    const como = document.getElementById('como');
+    const step3 = document.querySelector('[data-step3]');
+    const step3Fill = document.querySelector('[data-step3-fill]');
+    const paintStep3 = p => {
+      if (!step3 || !step3Fill) return;
+      // se pinta entre el 70% y el 100% de la cuerda, de arriba hacia abajo
+      const k = Math.min(1, Math.max(0, (p - 0.7) / 0.3));
+      step3Fill.style.transform = 'scaleY(' + k + ')';
+      step3.style.color = k > 0.5 ? 'var(--bg)' : 'var(--ink)';
+      step3.style.borderColor = k > 0.5 ? 'var(--ink)' : 'var(--line)';
+    };
+    let target = 0, cur = reduce ? 1 : 0, raf = null;
+    const paint = () => {
+      raf = null;
+      cur += (target - cur) * 0.18;
+      if (Math.abs(target - cur) < 0.002) cur = target;
+      if (rope) rope.setAttribute('stroke-dashoffset', String(1 - cur));
+      nodes.forEach((n, i) => n.setAttribute('fill', cur >= [0.1, 0.55, 0.98][i] ? 'var(--accent)' : 'var(--bg)'));
+      if (done) done.style.opacity = cur >= 0.98 ? 1 : 0.25;
+      paintStep3(cur);
+      if (cur !== target) raf = requestAnimationFrame(paint);
+    };
+    this.onScroll = () => {
+      if (of) { const dark = of.getBoundingClientRect().top < innerHeight * 0.4; if (dark !== this.state.dark) this.setState({ dark }); }
+      if (como && !reduce) {
+        const r = como.getBoundingClientRect();
+        target = Math.min(1, Math.max(0, (innerHeight * 0.8 - r.top) / (r.height * 0.9)));
+        if (!raf) raf = requestAnimationFrame(paint);
+      }
+    };
+    // miniclips: cada video reproduce en loop un fragmento corto (8s) y solo cuando está en pantalla
+    const vids = document.querySelectorAll('video[data-clip]');
+    const CLIP = 8;
+    vids.forEach(v => {
+      v.muted = true; v.loop = true; v.playsInline = true; v.setAttribute('muted', ''); v.setAttribute('playsinline', '');
+      const start = parseFloat(v.dataset.clip) || 0;
+      v.addEventListener('loadedmetadata', () => { v.currentTime = start; });
+      v.addEventListener('timeupdate', () => { if (v.currentTime > start + CLIP) v.currentTime = start; });
+    });
+    this.vio = new IntersectionObserver(es => es.forEach(e => {
+      const v = e.target;
+      if (e.isIntersecting) { const p = v.play(); p && p.catch(() => {}); } else v.pause();
+    }), { threshold: 0.2 });
+    vids.forEach(v => this.vio.observe(v));
+    if (reduce) { target = 1; paint(); }
+    addEventListener('scroll', this.onScroll, { passive: true });
+    addEventListener('resize', this.onScroll);
+    this.onScroll();
+  }
+  componentWillUnmount() { clearTimeout(this.introT); this.io && this.io.disconnect(); this.vio && this.vio.disconnect(); removeEventListener('scroll', this.onScroll); removeEventListener('resize', this.onScroll); }
+
+  renderVals() {
+    const key = this.state.theme || this.props.theme || 'porcelana';
+    const t = this.themes[key] || this.themes.porcelana;
+    const c = this.state.dark ? t.d : t;
+    const themeStyle = { '--bg': c.bg, '--panel': c.panel, '--ink': c.ink, '--accent': c.accent, '--onaccent': c.onaccent, '--mute': c.mute, '--line': c.line };
+    const showIntro = this.props.showIntro ?? true;
+    const navDefs = [['hero', 'Inicio'], ['senales', 'Señales'], ['como', 'Cómo trabajamos'], ['test', 'Test'], ['prueba', 'La prueba'], ['equipo', 'Equipo'], ['oferta', 'Qué montamos']];
+    const navItems = navDefs.slice(1).map(([id, label]) => ({ href: '#' + id, label, color: this.state.active === id ? c.accent : c.ink, bg: this.state.active === id ? c.panel : 'transparent' }));
+    const a = this.state.answers, n = a.length;
+    const termLines = a.map((ai, i) => ({ q: this.questions[i].q, key: 'ABC'[ai], a: this.questions[i].opts[ai] }));
+    const q = this.questions[n];
+    const question = q ? { q: q.q, opts: q.opts.map((o, i) => ({ key: 'ABC'[i], a: o, pick: () => this.setState(s => ({ answers: [...s.answers, i] })) })) } : null;
+    const filled = Math.round(n / 3 * 5);
+    const progressBar = '[' + '█'.repeat(filled) + '░'.repeat(5 - filled) + ']';
+    const studio = n === 3 && (a[0] === 2 || (a[1] === 2 && a[2] === 2));
+    const result = studio
+      ? { name: 'Studio', text: 'Tu operación tiene varias áreas y sistemas que no conversan. Conviene un equipo dedicado y software a medida que los integre.' }
+      : { name: 'Kit', text: 'Hay un proceso concreto que hoy depende de personas. Lo automatizamos de punta a punta y lo dejamos en producción en 6–8 semanas.' };
+    const palettes = Object.keys(this.themes).map(k => ({ name: this.themes[k].name, bg: this.themes[k].bg, accent: this.themes[k].accent, ring: k === key ? c.ink : 'transparent', pick: () => this.setState({ theme: k }) }));
+    const rail = () => this.railRef.current;
+    return {
+      themeStyle, dark: this.state.dark,
+      introTransform: showIntro && this.state.intro ? 'translateY(0)' : 'translateY(-101%)',
+      navItems,
+      termLines, question, showQuestion: !!q, showResult: n === 3, result, progressBar, progressLabel: n < 3 ? 'escaneando… ' + n + '/3' : 'listo · 3/3',
+      resetTest: () => this.setState({ answers: [] }),
+      palettes, showSwitcher: this.props.showSwitcher ?? true,
+      railRef: this.railRef,
+      prevCard: () => rail() && rail().scrollBy({ left: -348, behavior: 'smooth' }),
+      nextCard: () => rail() && rail().scrollBy({ left: 348, behavior: 'smooth' }),
+      dragStart: e => { const r = rail(); if (!r) return; this.drag = { x: e.clientX, sl: r.scrollLeft }; r.style.cursor = 'grabbing'; r.style.scrollSnapType = 'none'; },
+      dragMove: e => { const r = rail(); if (!this.drag || !r) return; r.scrollLeft = this.drag.sl - (e.clientX - this.drag.x); },
+      dragEnd: () => { const r = rail(); if (!r) return; this.drag = null; r.style.cursor = 'grab'; r.style.scrollSnapType = 'x proximity'; }
+    };
+  }
+}
+</script>
+</body>
+</html>
