@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<!-- NUDO Web v5 — prototipo "startup elegante" (2026-09-16)
-     Fusión: copy de nudo-ai.com (claridad) + energía visual de Nudo-Web-Prueba (marca)
-     Sistema: negro + óxido #FF4F1F · Space Grotesk / Inter / IBM Plex Mono (canon + feedback Xime/Ale)
-     Sin scroll-jacking: la página nunca se detiene. El nudo se desata en una columna sticky
-     con estados discretos — percepción clara, cero fricción. -->
+<!-- NUDO Web v6 — motion pack estilo heynesh.com (2026-09-17)
+     Base v5 (copy acotado + 5 paletas) + GSAP/ScrollTrigger/Lenis:
+     intro wordmark gigante · smooth scroll · nudo con scrub · morph claro→oscuro · carrusel horizontal.
+     Sin scroll-jacking: la página nunca se detiene. Fallback completo sin JS/reduced-motion. -->
 <html lang="es" data-theme="porcelana">
 <head>
 <meta charset="utf-8">
@@ -55,6 +54,25 @@
     --nav-bg:rgba(16,18,20,.8); --veil:rgba(16,18,20,.55);
     --ph1:#1B2125; --ph2:#14181B; --glow:rgba(47,214,188,.28);
   }
+  /* ---- MORPH claro→oscuro (desde "Qué montamos"): cada tema claro tiene su par oscuro ---- */
+  html[data-theme="porcelana"][data-mode="dark"]{
+    --bg:#0A0E1B; --bg2:#0D1222; --panel:#111730;
+    --ink:#EDF0F9; --ink2:#B7BDD4; --mut:#767D9A;
+    --sig:#5D7CFF; --sig-dim:rgba(93,124,255,.12);
+    --line:rgba(237,240,249,.11); --line2:rgba(237,240,249,.055);
+    --nav-bg:rgba(10,14,27,.8); --veil:rgba(10,14,27,.55);
+    --ph1:#161D38; --ph2:#0F1528; --glow:rgba(93,124,255,.3);
+  }
+  html[data-theme="lino"][data-mode="dark"]{
+    --bg:#0B0B0C; --bg2:#0F0F11; --panel:#121214;
+    --ink:#F2F1ED; --ink2:#BDBBB4; --mut:#7E7C75;
+    --sig:#FF4F1F; --sig-dim:rgba(255,79,31,.14);
+    --line:rgba(242,241,237,.10); --line2:rgba(242,241,237,.055);
+    --nav-bg:rgba(11,11,12,.8); --veil:rgba(11,11,12,.55);
+    --ph1:#17171a; --ph2:#101013; --glow:rgba(255,79,31,.3);
+  }
+  nav,footer,.blk,.offer,.mem,.signal,.ticker,.marq{
+    transition:background .6s var(--ease),background-color .6s var(--ease),border-color .6s var(--ease)}
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
   body{background:var(--bg);color:var(--ink);font-family:Inter,-apple-system,sans-serif;font-size:16.5px;
@@ -79,6 +97,17 @@
   .btn-p:hover{background:var(--ink);border-color:var(--ink)}
   .btn-g{background:transparent;color:var(--ink)}
   .btn-g:hover{border-color:var(--sig);color:var(--sig)}
+
+  /* INTRO — cortina de entrada automática (1.5s, cero costo de scroll) */
+  .intro{position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;align-items:center;
+    justify-content:center;overflow:hidden;pointer-events:none;
+    animation:introOut .55s var(--ease) 1.15s forwards}
+  .intro .word{font-family:"Space Grotesk";font-weight:700;font-size:clamp(90px,24vw,24vw);line-height:.8;
+    letter-spacing:-.04em;white-space:nowrap;user-select:none;
+    animation:wordIn 1.1s var(--ease) both}
+  @keyframes wordIn{from{transform:scale(1.12);opacity:0}30%{opacity:1}to{transform:scale(1)}}
+  @keyframes introOut{to{opacity:0;visibility:hidden}}
+  html.no-motion .intro{display:none}
 
   /* TICKER */
   .ticker{border-bottom:1px solid var(--line);background:var(--bg2)}
@@ -114,7 +143,7 @@
   .hero .knotbg .ghost{stroke:var(--line2);stroke-dasharray:none;stroke-dashoffset:0;animation:none}
   @keyframes draw{to{stroke-dashoffset:0}}
   .hero-eyebrow{margin-bottom:26px;opacity:0;animation:fade .8s var(--ease) .1s forwards}
-  h1.title{font-size:clamp(46px,7.4vw,108px);font-weight:700;letter-spacing:-.033em;line-height:.97;max-width:12ch}
+  h1.title{font-size:clamp(50px,8.2vw,122px);font-weight:700;letter-spacing:-.035em;line-height:.96;max-width:12ch}
   h1.title .line{display:block;overflow:hidden}
   h1.title .line>span{display:block;transform:translateY(112%);animation:rise 1s var(--ease) forwards}
   h1.title .line:nth-child(1)>span{animation-delay:.12s}
@@ -143,9 +172,10 @@
     -webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
   .marq-in{display:flex;width:max-content;animation:marq 36s linear infinite}
   .marq:hover .marq-in{animation-play-state:paused}
-  .marq span{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--ink2);padding:14px 0;white-space:nowrap}
-  .marq .sep{color:var(--sig);padding:14px 26px}
+  .marq span{font-family:"Space Grotesk";font-weight:700;font-size:clamp(17px,1.9vw,24px);letter-spacing:.02em;
+    text-transform:uppercase;color:var(--ink2);padding:16px 0;white-space:nowrap}
+  .marq span.o{color:transparent;-webkit-text-stroke:1.1px var(--sig)}
+  .marq .sep{color:var(--sig);padding:16px 26px;font-size:13px;-webkit-text-stroke:0}
   @keyframes marq{to{transform:translateX(-50%)}}
 
   /* SECTION base */
@@ -164,53 +194,78 @@
   .stagger.in>*:nth-child(3){transition-delay:.19s}.stagger.in>*:nth-child(4){transition-delay:.26s}
   .stagger.in>*:nth-child(5){transition-delay:.33s}.stagger.in>*:nth-child(6){transition-delay:.4s}
 
-  /* SEÑALES */
-  .signals{display:grid;grid-template-columns:1fr 1fr;margin-top:56px;border:1px solid var(--line)}
-  .signal{padding:clamp(26px,3vw,38px);border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);
-    transition:background .3s var(--ease)}
-  .signal:hover{background:var(--sig-dim)}
+  /* SEÑALES — carrusel horizontal */
+  .signals{display:flex;gap:18px;margin-top:56px;overflow-x:auto;scroll-snap-type:x mandatory;
+    scrollbar-width:none;padding-bottom:6px;cursor:grab}
+  .signals::-webkit-scrollbar{display:none}
+  .signals.dragging{cursor:grabbing;scroll-snap-type:none}
+  .signal{flex:0 0 min(360px,82vw);scroll-snap-align:start;padding:clamp(26px,3vw,38px);
+    border:1px solid var(--line);border-radius:4px;background:var(--panel);
+    transition:background .3s var(--ease),border-color .3s var(--ease)}
+  .signal:hover{background:var(--sig-dim);border-color:rgba(127,127,127,.35)}
+  .car-nav{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+  .car-nav button{width:46px;height:46px;border:1px solid var(--line);background:var(--panel);color:var(--ink);
+    cursor:pointer;font-size:16px;border-radius:2px;transition:border-color .25s,color .25s}
+  .car-nav button:hover{border-color:var(--sig);color:var(--sig)}
   .signal .n{font-family:"IBM Plex Mono",monospace;font-size:10.5px;color:var(--sig);letter-spacing:.16em}
   .signal h4{font-size:clamp(18px,1.8vw,22px);margin:14px 0 8px;letter-spacing:-.015em;line-height:1.15}
   .signal p{color:var(--ink2);font-size:14.5px;max-width:400px}
 
-  /* ============ EL DESANUDO — sticky lateral, sin scroll-jack ============ */
-  .untie{display:grid;grid-template-columns:1fr 1fr;gap:clamp(30px,5vw,80px);margin-top:64px;align-items:start}
-  .u-steps .step{min-height:56vh;display:flex;flex-direction:column;justify-content:center;
-    border-top:1px solid var(--line2);padding:40px 0}
-  .u-steps .step:first-child{border-top:0;padding-top:0}
-  .u-steps .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--sig)}
-  .u-steps h3{font-size:clamp(24px,2.6vw,34px);margin:16px 0 12px;letter-spacing:-.02em}
-  .u-steps p{color:var(--ink2);font-size:16px;max-width:440px}
-  .u-steps .tag{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;
-    color:var(--mut);margin-top:18px}
-  .u-visual{position:sticky;top:110px;height:calc(100svh - 160px);min-height:420px;
-    display:flex;flex-direction:column;justify-content:center;border:1px solid var(--line);
-    background:var(--panel);padding:30px;border-radius:4px}
-  .u-visual svg{width:100%;height:auto;overflow:visible}
-  .u-visual path{fill:none;stroke:var(--sig);stroke-width:7;stroke-linecap:round;
-    filter:drop-shadow(0 0 18px var(--glow))}
-  .u-visual .end{fill:var(--ink)}
-  .u-read{display:flex;justify-content:space-between;align-items:baseline;margin-top:22px;border-top:1px solid var(--line2);padding-top:18px}
-  .u-read .pct{font-family:"Space Grotesk";font-weight:700;font-size:38px;font-variant-numeric:tabular-nums}
-  .u-read .pct i{font-style:normal;color:var(--sig)}
+  /* ============ EL DESANUDO — horizontal: la cuerda se desata de paso a paso ============ */
+  .untie2{margin-top:52px;position:relative}
+  .rope-wrap{position:relative;height:clamp(110px,15vw,190px);margin-bottom:14px}
+  .rope-wrap svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  #ropePath{fill:none;stroke:var(--sig);stroke-width:5;stroke-linecap:round;
+    filter:drop-shadow(0 0 14px var(--glow))}
+  .rnode{fill:var(--bg);stroke:var(--sig);stroke-width:3;transition:fill .35s var(--ease)}
+  .rnode.on{fill:var(--sig)}
+  .rope-lab{position:absolute;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--mut)}
+  .rope-lab.l1{left:0;top:-6px}
+  .rope-lab.l2{right:0;top:-6px;color:var(--sig)}
+  .usteps3{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,3vw,40px)}
+  .us{border-top:1.5px solid var(--line);padding-top:18px}
+  .us .k{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--sig)}
+  .us h3{font-size:clamp(19px,1.9vw,24px);margin:12px 0 8px;letter-spacing:-.015em}
+  .us p{color:var(--ink2);font-size:14.5px;max-width:36ch}
+  .us .tag{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mut);margin-top:14px}
 
-  /* TEST */
-  .testbox{margin-top:56px;border:1px solid var(--line);background:var(--panel);border-radius:4px;overflow:hidden}
-  .testbar{display:flex;justify-content:space-between;align-items:center;padding:14px 22px;border-bottom:1px solid var(--line2);background:var(--bg2)}
-  .t-body{padding:clamp(28px,4vw,48px)}
-  .t-q{font-size:clamp(22px,2.4vw,30px);font-family:"Space Grotesk";font-weight:600;letter-spacing:-.015em;margin-bottom:26px}
-  .t-opts{display:flex;flex-direction:column;gap:12px}
-  .t-opt{display:flex;gap:16px;align-items:center;border:1px solid var(--line);padding:18px 22px;cursor:pointer;
-    background:transparent;color:var(--ink);text-align:left;font-family:Inter;font-size:15.5px;border-radius:2px;
-    transition:border-color .25s,background .25s,transform .2s var(--ease)}
-  .t-opt:hover{border-color:var(--sig);background:var(--sig-dim);transform:translateX(4px)}
-  .t-opt .l{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--sig);letter-spacing:.1em;flex:none}
-  .t-result{display:none}
-  .t-result .rk{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--sig)}
-  .t-result h3{font-size:clamp(24px,2.8vw,36px);margin:14px 0 10px;letter-spacing:-.02em}
-  .t-result p{color:var(--ink2);max-width:560px}
-  .t-result .cta{margin-top:26px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
-  .t-reset{background:none;border:0;color:var(--mut);cursor:pointer;font-family:"IBM Plex Mono",monospace;
+  /* TEST — terminal de diagnóstico (siempre oscuro, como un terminal real) */
+  .testbox{margin-top:56px;border:1px solid #23242C;background:#0D0E12;border-radius:10px;overflow:hidden;
+    box-shadow:0 34px 70px -42px rgba(0,0,0,.65);transform:rotate(-.4deg)}
+  .testbar{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;
+    background:#14151B;border-bottom:1px solid #23242C}
+  .tdots{display:flex;gap:7px}
+  .tdots i{width:11px;height:11px;border-radius:50%}
+  .tdots i:nth-child(1){background:#FF5F57}.tdots i:nth-child(2){background:#FEBC2E}.tdots i:nth-child(3){background:#28C840}
+  .testbar .lab{color:#7C8092}
+  #term{padding:clamp(22px,3vw,36px);font-family:"IBM Plex Mono",monospace;font-size:13.5px;line-height:1.95;
+    color:#C9CCDA;max-height:460px;overflow-y:auto;scrollbar-width:thin}
+  .t-line{opacity:0;transform:translateY(6px);animation:tin .3s var(--ease) forwards}
+  @keyframes tin{to{opacity:1;transform:none}}
+  .t-line .p{color:var(--sig)}
+  .t-line.cmt{color:#6D7284}
+  .t-line.q{color:#FFFFFF;font-weight:600;font-size:15.5px;margin:12px 0 4px}
+  .t-line.echo .ok{color:#28C840}
+  .t-opts{display:flex;flex-direction:column;gap:8px;margin:10px 0 6px}
+  .t-opt{display:flex;gap:12px;align-items:center;text-align:left;font-family:"IBM Plex Mono",monospace;font-size:13px;
+    color:#C9CCDA;background:transparent;border:1px solid #23242C;border-radius:5px;padding:14px 16px;cursor:pointer;
+    opacity:0;transform:translateY(6px);animation:tin .3s var(--ease) forwards;
+    transition:border-color .2s,background .2s,transform .2s var(--ease),color .2s}
+  .t-opts .t-opt:nth-child(2){animation-delay:.08s}.t-opts .t-opt:nth-child(3){animation-delay:.16s}
+  .t-opt:hover{border-color:var(--sig);color:#fff;background:rgba(255,255,255,.04);transform:translateX(8px)}
+  .t-opt .l{color:var(--sig);flex:none}
+  .cursor{display:inline-block;width:9px;height:16px;background:var(--sig);vertical-align:-2px;
+    animation:cblink 1.1s steps(2) infinite}
+  @keyframes cblink{50%{opacity:.1}}
+  .t-result{border:1px solid var(--sig);border-radius:8px;padding:clamp(20px,2.6vw,30px);margin-top:16px;
+    animation:tin .45s var(--ease) both;background:rgba(255,255,255,.02)}
+  .t-result .rk{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--sig)}
+  .t-result h3{font-family:"Space Grotesk";font-size:clamp(21px,2.4vw,30px);color:#fff;margin:10px 0 8px;letter-spacing:-.015em}
+  .t-result p{color:#AEB2C2;font-size:13.5px;font-family:Inter;line-height:1.65;max-width:540px}
+  .t-result .cta{margin-top:20px;display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+  .t-reset{background:none;border:0;color:#6D7284;cursor:pointer;font-family:"IBM Plex Mono",monospace;
     font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;padding:8px 0}
   .t-reset:hover{color:var(--sig)}
 
@@ -220,9 +275,16 @@
     letter-spacing:-.02em;line-height:1.25}
   .case blockquote em{color:var(--sig);font-style:normal}
   .case .meta{margin-top:26px;color:var(--ink2);font-size:15.5px;max-width:520px}
-  .case .datos{border-left:1px solid var(--line);padding-left:clamp(24px,3vw,44px);display:flex;flex-direction:column;gap:26px}
-  .case .d .v{font-family:"Space Grotesk";font-weight:600;font-size:26px}
-  .case .d .k{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mut);margin-top:4px}
+  .caselist{border-left:1px solid var(--line);padding-left:clamp(24px,3vw,44px);display:flex;flex-direction:column}
+  .cs{padding:15px 0;border-bottom:1px solid var(--line2)}
+  .cs:first-child{padding-top:2px}
+  .cs:last-child{border-bottom:0}
+  .cs .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+  .cs b{font-family:"Space Grotesk";font-size:16.5px;letter-spacing:-.01em}
+  .cs .st{font-family:"IBM Plex Mono",monospace;font-size:8.5px;letter-spacing:.14em;text-transform:uppercase;
+    padding:4px 10px;border-radius:20px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}
+  .cs .st.on{color:var(--sig);border-color:var(--sig)}
+  .cs p{color:var(--ink2);font-size:13.5px;margin-top:3px}
 
   /* EQUIPO */
   .team{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:56px auto 0;max-width:820px}
@@ -283,6 +345,56 @@
   .copy{margin-top:44px;padding:20px 0 32px;border-top:1px solid var(--line2);display:flex;
     justify-content:space-between;flex-wrap:wrap;gap:10px}
 
+  /* ---- NIVEL DE DISEÑO: stickers, kicker-pill, mockups UI ---- */
+  .sticker{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.18em;
+    text-transform:uppercase;padding:10px 18px;border:1.5px solid var(--ink);border-radius:30px;color:var(--ink);
+    background:var(--panel);box-shadow:3px 3px 0 var(--sig);transform:rotate(var(--rot,-2deg));z-index:3}
+  .hero .stk1{position:absolute;top:15%;right:7%;--rot:4deg}
+  .hero .stk2{position:absolute;bottom:32%;right:20%;--rot:-6deg}
+  .kicker{border:1.5px solid var(--sig);border-radius:30px;padding:8px 18px;transform:rotate(-1.2deg)}
+  .kicker:before{display:none}
+
+  /* señales como mockups del caos */
+  .signal{padding:0;display:flex;flex-direction:column;overflow:hidden;transform:rotate(var(--rot,0deg));
+    box-shadow:0 20px 44px -30px rgba(0,0,0,.4);transition:transform .35s var(--ease),background .3s var(--ease),border-color .3s var(--ease)}
+  .signal:hover{transform:rotate(0deg) translateY(-6px)}
+  .signal .mock{flex:1;padding:18px;display:flex;flex-direction:column;gap:8px;background:var(--bg2);min-height:230px}
+  .signal .cap{padding:16px 20px;border-top:1px solid var(--line2)}
+  .signal .cap h4{margin:8px 0 0;font-size:17px}
+  .mk-head{display:flex;justify-content:space-between;align-items:center;font-family:"IBM Plex Mono",monospace;
+    font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);padding-bottom:8px;
+    border-bottom:1px solid var(--line2)}
+  .mk-head .dot3{letter-spacing:2px}
+  .bub{max-width:88%;padding:9px 13px;border-radius:12px;font-size:12.5px;line-height:1.45;
+    background:var(--panel);border:1px solid var(--line2)}
+  .bub.out{align-self:flex-end;background:var(--sig-dim);border-color:transparent}
+  .bub .t{display:block;font-size:9px;color:var(--mut);margin-top:3px;text-align:right;font-family:"IBM Plex Mono",monospace}
+  .badge-alert{align-self:flex-start;font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--sig);border:1px dashed var(--sig);padding:6px 10px;border-radius:8px;margin-top:auto}
+  .sheet{border:1px solid var(--line2);border-radius:8px;overflow:hidden;font-size:12px}
+  .srow{display:grid;grid-template-columns:34px 1fr 76px;border-bottom:1px solid var(--line2)}
+  .srow:last-child{border-bottom:0}
+  .srow>span{padding:7px 9px;border-right:1px solid var(--line2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .srow>span:last-child{border-right:0;text-align:right}
+  .srow .id{background:var(--panel);color:var(--mut);font-family:"IBM Plex Mono",monospace;font-size:10px}
+  .srow .err{color:var(--sig);font-weight:600;font-family:"IBM Plex Mono",monospace}
+  .coldwrap{margin-top:auto}
+  .coldlab{display:flex;justify-content:space-between;font-family:"IBM Plex Mono",monospace;font-size:9.5px;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+  .coldbar{height:8px;border-radius:4px;background:linear-gradient(90deg,var(--sig) 15%,var(--line) 80%)}
+  .postit{background:var(--sig-dim);border:1px solid var(--line2);padding:18px;border-radius:6px;
+    font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;line-height:2.1}
+  .postit b{color:var(--sig)}
+  .skel{height:10px;border-radius:5px;background:var(--line);position:relative;overflow:hidden}
+  .skel:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+    animation:sk 1.6s infinite}
+  @keyframes sk{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+  .ev{padding:8px 11px;border-radius:8px;font-size:12px;border:1px solid var(--line2);background:var(--panel)}
+  .ev.warn{border-color:var(--sig);color:var(--sig)}
+  .ev .k{font-family:"IBM Plex Mono",monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--mut);display:block;margin-bottom:2px}
+  @media(max-width:900px){.hero .stk1,.hero .stk2{display:none}}
+
   /* THEMER (herramienta de prototipo) */
   #themer{position:fixed;bottom:18px;left:18px;z-index:80;display:flex;align-items:center;gap:10px;
     background:var(--nav-bg);backdrop-filter:blur(12px);border:1px solid var(--line);border-radius:30px;
@@ -296,13 +408,13 @@
 
   /* RESPONSIVE */
   @media(max-width:900px){
-    .signals,.team,.offers,.case{grid-template-columns:1fr}
-    .untie{grid-template-columns:1fr}
-    .u-visual{position:relative;top:0;height:auto;min-height:0;order:-1}
-    .u-steps .step{min-height:0;padding:34px 0}
+    .team,.offers,.case{grid-template-columns:1fr}
+    .intro .word{font-size:34vw}
+    .usteps3{grid-template-columns:1fr;gap:26px}
+    .rope-wrap{height:84px}
     .proof .wrap{grid-template-columns:1fr}
     .proof .cell{border-right:0;border-bottom:1px solid var(--line2);padding-left:0}
-    .case .datos{border-left:0;padding-left:0;flex-direction:row;gap:30px;flex-wrap:wrap;border-top:1px solid var(--line);padding-top:24px}
+    .caselist{border-left:0;padding-left:0;border-top:1px solid var(--line);padding-top:12px;margin-top:8px}
     .nav .links{display:none}.burger{display:block}
     .hero .knotbg{opacity:.4;right:-30%}
   }
@@ -352,12 +464,19 @@
 
 <span id="top"></span>
 
+<!-- INTRO — cortina de entrada -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="word" id="introWord">NUD<span class="o">O</span></div>
+</div>
+
 <!-- HERO -->
 <header class="hero">
   <svg class="knotbg" viewBox="0 0 600 600" aria-hidden="true">
     <path class="ghost" d="M130 300 C 60 180, 230 90, 300 190 C 370 290, 230 310, 300 410 C 370 510, 540 420, 470 300 C 410 200, 300 260, 240 330 C 180 400, 330 470, 420 400"/>
     <path d="M130 300 C 60 180, 230 90, 300 190 C 370 290, 230 310, 300 410 C 370 510, 540 420, 470 300 C 410 200, 300 260, 240 330 C 180 400, 330 470, 420 400"/>
   </svg>
+  <span class="sticker stk1">Est. 2026 · Lima, PE</span>
+  <span class="sticker stk2">IA en producción</span>
   <div class="wrap">
     <div class="lab hero-eyebrow"><span class="s">●</span> Estudio de IA y software · Lima</div>
     <h1 class="title">
@@ -383,7 +502,7 @@
 
 <!-- MARQUEE -->
 <div class="marq" aria-hidden="true"><div class="marq-in" id="marq">
-  <span>Mobiliario</span><span class="sep">//</span><span>Seguridad electrónica</span><span class="sep">//</span><span>Salud</span><span class="sep">//</span><span>Agroexportación</span><span class="sep">//</span><span>Manufactura</span><span class="sep">//</span><span>Entretenimiento</span><span class="sep">//</span><span>Estado</span><span class="sep">//</span>
+  <span>Mobiliario</span><span class="sep">✦</span><span class="o">Seguridad electrónica</span><span class="sep">✦</span><span>Salud</span><span class="sep">✦</span><span class="o">Agroexportación</span><span class="sep">✦</span><span>Manufactura</span><span class="sep">✦</span><span class="o">Entretenimiento</span><span class="sep">✦</span><span>Estado</span><span class="sep">✦</span>
 </div></div>
 
 <!-- 01 SEÑALES -->
@@ -394,53 +513,114 @@
     <p class="lead">No es que falte tecnología. Es que el trabajo se cae en el espacio entre una herramienta y la siguiente. Ahí se pierden las horas y la plata.</p>
   </div>
   <div class="signals stagger">
-    <div class="signal"><div class="n">SEÑAL 01</div><h4>Alguien copia y pega todo el día</h4><p>Del correo al Excel, del Excel al sistema. Un sueldo entero dedicado a mover información.</p></div>
-    <div class="signal"><div class="n">SEÑAL 02</div><h4>Las cotizaciones se enfrían solas</h4><p>Salieron, nadie las siguió, el cliente compró en otro lado.</p></div>
-    <div class="signal"><div class="n">SEÑAL 03</div><h4>Para saber cómo va el mes, pides un Excel</h4><p>Llega tarde y distinto cada vez. Decides con datos de la semana pasada.</p></div>
-    <div class="signal"><div class="n">SEÑAL 04</div><h4>Si te vas dos semanas, algo se cae</h4><p>La mitad del proceso vive en la cabeza de una persona, no en un sistema.</p></div>
-    <div class="signal"><div class="n">SEÑAL 05</div><h4>El WhatsApp es un cuello de botella</h4><p>Consultas a toda hora que se responden cuando se puede — o nunca.</p></div>
-    <div class="signal"><div class="n">SEÑAL 06</div><h4>Cada área tiene su propia verdad</h4><p>Ventas, almacén y contabilidad dicen cosas distintas. Nadie está conectado.</p></div>
+    <div class="signal" style="--rot:-1.4deg">
+      <div class="mock">
+        <div class="mk-head"><span>WhatsApp — Operaciones</span><span class="dot3">•••</span></div>
+        <div class="bub">¿Me pasas el Excel actualizado?<span class="t">9:14</span></div>
+        <div class="bub out">dame 20 min, lo estoy armando<span class="t">9:41</span></div>
+        <div class="bub">es para la reunión de las 3…<span class="t">11:02</span></div>
+        <div class="badge-alert">47 chats sin responder</div>
+      </div>
+      <div class="cap"><div class="n">SEÑAL 01</div><h4>El chat es el ERP</h4></div>
+    </div>
+    <div class="signal" style="--rot:1.2deg">
+      <div class="mock">
+        <div class="mk-head"><span>ventas_FINAL_v7_AHORASI.xlsx</span><span class="dot3">•••</span></div>
+        <div class="sheet">
+          <div class="srow"><span class="id">14</span><span>Cliente Andes SAC</span><span>S/ 48,200</span></div>
+          <div class="srow"><span class="id">15</span><span>¿quién tocó esta fila?</span><span class="err">#¡REF!</span></div>
+          <div class="srow"><span class="id">16</span><span>Pedido — confirmar c/ almacén</span><span>S/ 12,750</span></div>
+          <div class="srow"><span class="id">17</span><span>revisar!! (comentario de Julia)</span><span class="err">#N/D</span></div>
+        </div>
+        <div class="badge-alert">editado por 6 personas hoy</div>
+      </div>
+      <div class="cap"><div class="n">SEÑAL 02</div><h4>El Excel es el sistema</h4></div>
+    </div>
+    <div class="signal" style="--rot:-.8deg">
+      <div class="mock">
+        <div class="mk-head"><span>COT-0147 — Cliente Andes SAC</span><span class="dot3">•••</span></div>
+        <div class="bub">Cotización enviada. Quedamos atentos a sus comentarios.<span class="t">hace 6 días</span></div>
+        <div class="coldwrap">
+          <div class="coldlab"><span>seguimiento</span><span>enfriándose</span></div>
+          <div class="coldbar"></div>
+        </div>
+        <div class="badge-alert">sin follow-up asignado</div>
+      </div>
+      <div class="cap"><div class="n">SEÑAL 03</div><h4>La venta se enfría sola</h4></div>
+    </div>
+    <div class="signal" style="--rot:1.5deg">
+      <div class="mock">
+        <div class="mk-head"><span>Nota en el monitor</span><span class="dot3">•••</span></div>
+        <div class="postit"><b>Todo pasa por RG:</b><br>· aprobar pagos<br>· revisar cotizaciones<br>· responder el WhatsApp<br>· firmar guías</div>
+      </div>
+      <div class="cap"><div class="n">SEÑAL 04</div><h4>Todo pasa por una persona</h4></div>
+    </div>
+    <div class="signal" style="--rot:-1.2deg">
+      <div class="mock">
+        <div class="mk-head"><span>Reporte del mes — gerencia</span><span class="dot3">•••</span></div>
+        <div class="skel" style="width:76%"></div>
+        <div class="skel" style="width:58%"></div>
+        <div class="skel" style="width:66%"></div>
+        <div class="skel" style="width:38%"></div>
+        <div class="badge-alert">esperando el Excel de contabilidad…</div>
+      </div>
+      <div class="cap"><div class="n">SEÑAL 05</div><h4>Decides con datos viejos</h4></div>
+    </div>
+    <div class="signal" style="--rot:.9deg">
+      <div class="mock">
+        <div class="mk-head"><span>Calendario — semana 32</span><span class="dot3">•••</span></div>
+        <div class="ev"><span class="k">Lun — Vie</span>Gerente de vacaciones (2 semanas)</div>
+        <div class="ev warn"><span class="k">Mar 10:00</span>URGENTE: ¿dónde está el contrato?</div>
+        <div class="ev warn"><span class="k">Jue 16:00</span>nadie sabe la clave del ERP</div>
+      </div>
+      <div class="cap"><div class="n">SEÑAL 06</div><h4>Te vas dos semanas y algo se cae</h4></div>
+    </div>
   </div>
+  <div class="car-nav"><button id="sPrev" aria-label="Anterior">←</button><button id="sNext" aria-label="Siguiente">→</button></div>
 </div></section>
 
-<!-- 02 EL DESANUDO (sticky lateral, sin scroll-jack) -->
+<!-- 02 EL DESANUDO — horizontal -->
 <section class="blk" id="desanudo"><div class="wrap">
   <div class="reveal">
     <div class="kicker">02 — Cómo trabajamos</div>
-    <h2 class="sec">Así trabajamos: tres <span class="o">pasos.</span></h2>
-    <p class="lead">A la derecha, el nudo se desata paso a paso — igual que tu operación.</p>
+    <h2 class="sec">Del enredo a que corra <span class="o">solo.</span></h2>
   </div>
-  <div class="untie">
-    <div class="u-steps" id="usteps">
-      <div class="step" data-state="0">
+  <div class="untie2 reveal">
+    <div class="rope-wrap">
+      <span class="rope-lab l1">tu operación hoy</span>
+      <span class="rope-lab l2">corre sola ✓</span>
+      <svg viewBox="0 0 1200 220" preserveAspectRatio="none" aria-hidden="true">
+        <path id="ropePath" d="M 40 120
+          C 80 30, 220 20, 200 110
+          C 185 185, 90 175, 130 95
+          C 160 40, 300 55, 285 130
+          C 275 190, 380 170, 430 130
+          C 480 95, 540 90, 600 112
+          C 650 128, 700 132, 760 122
+          C 850 110, 950 112, 1160 112"/>
+        <circle class="rnode" cx="200" cy="110" r="7"/>
+        <circle class="rnode" cx="600" cy="112" r="7"/>
+        <circle class="rnode" cx="1000" cy="112" r="7"/>
+      </svg>
+    </div>
+    <div class="usteps3">
+      <div class="us">
         <div class="k">Paso 01 · Diagnóstico</div>
         <h3>Encontramos dónde se va el tiempo</h3>
-        <p>Media hora contigo y con tu equipo. Salimos con un número: cuántas horas al mes se van en trabajo manual — y cuáles se pueden eliminar.</p>
-        <div class="tag">Entregable → diagnóstico con cifras, tuyo</div>
+        <p>Media hora contigo. Salimos con un número: cuántas horas al mes se van en trabajo manual.</p>
+        <div class="tag">30 min · gratis · el número es tuyo</div>
       </div>
-      <div class="step" data-state="1">
+      <div class="us">
         <div class="k">Paso 02 · Implementación</div>
         <h3>Montamos el sistema</h3>
-        <p>Alcance y plazo definidos antes de empezar. Cada semana ves el sistema andando de verdad en tu operación.</p>
-        <div class="tag">Entregable → sistema corriendo en producción</div>
+        <p>Alcance y plazo definidos antes de empezar. Cada semana lo ves andando de verdad.</p>
+        <div class="tag">6–8 semanas · demo semanal</div>
       </div>
-      <div class="step" data-state="2">
+      <div class="us">
         <div class="k">Paso 03 · Acompañamiento</div>
         <h3>Lo cuidamos y lo mejoramos</h3>
-        <p>Vigilamos que funcione, lo ajustamos cuando tu negocio cambia y le agregamos capacidades. Tu información siempre es tuya.</p>
-        <div class="tag">Entregable → operación que no depende de tu memoria</div>
-      </div>
-    </div>
-    <div class="u-visual">
-      <div class="lab"><span class="s">●</span> FIG. 01 — Tu operación</div>
-      <svg viewBox="0 0 520 380" aria-hidden="true" style="margin-top:14px">
-        <path id="uknot" d=""/>
-        <circle class="end" id="uA" r="5"/>
-        <circle class="end" id="uB" r="5"/>
-      </svg>
-      <div class="u-read">
-        <span class="lab" id="ulab">estado: enredada</span>
-        <span class="pct"><span id="upct">0</span><i>%</i></span>
+        <p>Lo vigilamos, lo ajustamos y le agregamos capacidades. Tu información siempre es tuya.</p>
+        <div class="tag">mensualidad · todo queda contigo</div>
       </div>
     </div>
   </div>
@@ -455,24 +635,11 @@
   </div>
   <div class="testbox reveal">
     <div class="testbar">
-      <span class="lab">NUDO — TEST.SH</span>
-      <span class="lab" id="tprog">Pregunta 1 de 3</span>
+      <div class="tdots"><i></i><i></i><i></i></div>
+      <span class="lab">NUDO — DIAGNOSTICO.SH</span>
+      <span class="lab" id="tprog">[░░░░░░░░] 1/3</span>
     </div>
-    <div class="t-body">
-      <div id="tq">
-        <div class="t-q" id="tqt"></div>
-        <div class="t-opts" id="topts"></div>
-      </div>
-      <div class="t-result" id="tres">
-        <div class="rk">Diagnóstico preliminar</div>
-        <h3 id="tresh"></h3>
-        <p id="tresp"></p>
-        <div class="cta">
-          <a class="btn btn-p" href="#contacto">Agenda tu diagnóstico <span class="ar">→</span></a>
-          <button class="t-reset" id="treset">↻ Repetir el test</button>
-        </div>
-      </div>
-    </div>
+    <div id="term"></div>
   </div>
 </div></section>
 
@@ -485,12 +652,16 @@
   <div class="case reveal">
     <div>
       <blockquote>«Cada cotización pasaba por tres personas y un Excel. Las que se enfriaban, <em>se perdían sin que nadie se enterara.</em>»</blockquote>
-      <p class="meta">Hoy la cotización sale sola desde el sistema, y las que se enfrían las persigue el propio sistema. El equipo comercial dejó de armar documentos y volvió a vender.</p>
+      <p class="meta">Hoy la cotización sale sola y las que se enfrían las persigue el propio sistema. El equipo comercial volvió a vender.</p>
+      <p class="lab" style="margin-top:18px">Mobiliario · Lima · 8 semanas · <span class="s">0 Excel en el flujo</span></p>
     </div>
-    <div class="datos">
-      <div class="d"><div class="v">8 semanas</div><div class="k">de implementación</div></div>
-      <div class="d"><div class="v">Mobiliario</div><div class="k">sector · Lima</div></div>
-      <div class="d"><div class="v">0 Excel</div><div class="k">en el flujo de cotización</div></div>
+    <div class="caselist">
+      <div class="cs"><div class="top"><b>Diagnostic Pro</b><span class="st on">En producción</span></div><p>Diagnósticos y reportes que salen solos del sistema.</p></div>
+      <div class="cs"><div class="top"><b>Clínica — Lima</b><span class="st on">En producción</span></div><p>La operación diaria de la clínica, sin papeleo manual.</p></div>
+      <div class="cs"><div class="top"><b>Software de clínicas</b><span class="st">En desarrollo</span></div><p>Citas, pacientes y caja en un solo lugar.</p></div>
+      <div class="cs"><div class="top"><b>NUDO Growth</b><span class="st on">En producción</span></div><p>Gestión comercial por WhatsApp: atiende, agenda y persigue.</p></div>
+      <div class="cs"><div class="top"><b>Vuelve</b><span class="st">En desarrollo</span></div><p>De la hoja de cálculo maestra a una base de datos que corre sola.</p></div>
+      <div class="cs"><div class="top"><b>Casinos — SL Tech</b><span class="st on">En producción</span></div><p>108 máquinas: gastos y contabilidad se capturan solos en el ERP.</p></div>
     </div>
   </div>
 </div></section>
@@ -580,46 +751,36 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script>
 (function(){
+  const reducedM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const hasGSAP=typeof gsap!=='undefined'&&typeof ScrollTrigger!=='undefined';
+  const motionOn=!reducedM&&hasGSAP;
+  if(!motionOn){document.documentElement.classList.add('no-motion')}
   /* ---------- nudo del hero: se dibuja solo (CSS) ---------- */
 
   /* ---------- EL DESANUDO: sticky + estados discretos ---------- */
-  // 3 estados del mismo trazo (M + 5 curvas): enredado → aflojando → línea
-  const S=[
-    [60,190, 130,60,260,40,300,150, 340,260,180,270,240,160, 300,50,430,90,400,210, 375,310,470,320,460,220, 452,140,330,300,470,330],
-    [60,190, 140,110,250,100,300,170, 350,230,230,235,280,180, 330,120,420,140,410,210, 402,270,450,260,455,215, 458,175,400,300,475,300],
-    [60,190, 140,188,220,186,300,187, 360,188,400,188,430,188, 450,188,460,188,468,188, 472,188,476,188,478,188, 480,188,484,188,486,188]
-  ];
-  const uk=document.getElementById('uknot'),uA=document.getElementById('uA'),uB=document.getElementById('uB'),
-        upct=document.getElementById('upct'),ulab=document.getElementById('ulab');
-  const LBL=['estado: enredada','estado: aflojando…','estado: corre sola ✓'];
-  const PCT=[0,55,100];
-  let cur=S[0].slice(), target=S[0], curPct=0, targetPct=0, tickOn=false;
-
-  function build(v){let d=`M ${v[0]} ${v[1]}`;for(let i=2;i<v.length;i+=6)d+=` C ${v[i]} ${v[i+1]}, ${v[i+2]} ${v[i+3]}, ${v[i+4]} ${v[i+5]}`;return d}
-  function paint(){
-    uk.setAttribute('d',build(cur));
-    uA.setAttribute('cx',cur[0]);uA.setAttribute('cy',cur[1]);
-    uB.setAttribute('cx',cur[cur.length-2]);uB.setAttribute('cy',cur[cur.length-1]);
-    upct.textContent=Math.round(curPct);
+  // la cuerda horizontal: se dibuja de izquierda a derecha; los nodos se encienden por paso
+  const rope=document.getElementById('ropePath');
+  const rnodes=[...document.querySelectorAll('.rnode')];
+  const ropeLen=rope.getTotalLength();
+  rope.style.strokeDasharray=ropeLen;
+  rope.style.strokeDashoffset=ropeLen;
+  function ropeAt(p){
+    rope.style.strokeDashoffset=ropeLen*(1-p);
+    rnodes.forEach((n,i)=>n.classList.toggle('on',p>(i+.55)/3));
   }
-  function tween(){
-    tickOn=true;let done=true;
-    for(let i=0;i<cur.length;i++){const d=target[i]-cur[i];if(Math.abs(d)>.4){cur[i]+=d*.09;done=false}else cur[i]=target[i]}
-    const dp=targetPct-curPct;if(Math.abs(dp)>.4){curPct+=dp*.09;done=false}else curPct=targetPct;
-    paint();
-    if(!done)requestAnimationFrame(tween);else tickOn=false;
+  if(!motionOn){
+    // fallback: se dibuja completa al entrar en viewport
+    const rio=new IntersectionObserver(es=>es.forEach(e=>{
+      if(e.isIntersecting){rope.style.transition='stroke-dashoffset 2.2s cubic-bezier(.19,1,.22,1)';
+        ropeAt(1);rio.unobserve(e.target)}
+    }),{threshold:.3});
+    rio.observe(document.querySelector('.untie2'));
   }
-  function setState(n){
-    target=S[n];targetPct=PCT[n];ulab.textContent=LBL[n];
-    if(!tickOn)requestAnimationFrame(tween);
-  }
-  paint();
-  const sio=new IntersectionObserver(es=>es.forEach(e=>{
-    if(e.isIntersecting)setState(+e.target.dataset.state);
-  }),{rootMargin:'-40% 0px -40% 0px'});
-  document.querySelectorAll('#usteps .step').forEach(el=>sio.observe(el));
 
   /* ---------- TEST ---------- */
   const QS=[
@@ -640,30 +801,52 @@
               ventas:'un motor que arme y persiga tus cotizaciones solo',
               datos:'un tablero donde todo el negocio se vea al día (Paneles en vivo)'};
   let qi=0,ans=[];
-  const tqt=document.getElementById('tqt'),topts=document.getElementById('topts'),
-        tprog=document.getElementById('tprog'),tq=document.getElementById('tq'),
-        tres=document.getElementById('tres'),tresh=document.getElementById('tresh'),tresp=document.getElementById('tresp');
-  function renderQ(){
-    tprog.textContent=`Pregunta ${qi+1} de 3`;
-    tqt.textContent=QS[qi].q;
-    topts.innerHTML='';
+  const term=document.getElementById('term'),tprog=document.getElementById('tprog');
+  function tline(html,cls){const d=document.createElement('div');d.className='t-line '+(cls||'');
+    d.innerHTML=html;term.appendChild(d);term.scrollTop=term.scrollHeight;return d}
+  function tbar(){const f=Math.round(qi/3*8);
+    tprog.textContent='['+'█'.repeat(f)+'░'.repeat(8-f)+'] '+Math.min(qi+1,3)+'/3'}
+  function ask(){
+    tbar();
+    tline('<span class="p">$</span> nudo scan --pregunta='+(qi+1),'cmd');
+    tline('# '+QS[qi].q,'q');
+    const wrap=document.createElement('div');wrap.className='t-opts';
     QS[qi].o.forEach(([l,t,v])=>{
       const b=document.createElement('button');b.className='t-opt';
-      b.innerHTML=`<span class="l">${l} ›</span><span>${t}</span>`;
-      b.onclick=()=>{ans.push(v);qi++;qi<QS.length?renderQ():renderR()};
-      topts.appendChild(b);
+      b.innerHTML='<span class="l">['+l+'] ›</span><span>'+t+'</span>';
+      b.onclick=()=>{
+        wrap.remove();
+        tline('<span class="echo"><span class="ok">✓</span></span> registrado: ['+l+'] '+t.toLowerCase(),'echo');
+        ans.push(v);qi++;
+        qi<QS.length?setTimeout(ask,280):setTimeout(tresult,380);
+      };
+      wrap.appendChild(b);
     });
+    term.appendChild(wrap);term.scrollTop=term.scrollHeight;
   }
-  function renderR(){
-    const linea=ans[1]==='kit'?'NUDO Kit':'NUDO Studio';
-    const dolor=PROD[ans[0]];
-    tresh.textContent=`Tu nudo apunta a ${linea}.`;
-    tresp.textContent=`Por lo que marcaste, lo que más alivia primero es ${dolor}. En el diagnóstico de 30 minutos lo convertimos en un número: cuántas horas al mes recuperas y qué desatar primero.`;
-    tprog.textContent='Resultado';
-    tq.style.display='none';tres.style.display='block';
+  function tresult(){
+    tprog.textContent='[████████] listo ✓';
+    tline('<span class="p">$</span> nudo diagnose --resultado','cmd');
+    tline('> compilando diagnóstico… <span class="cursor"></span>','cmt');
+    setTimeout(()=>{
+      const c=term.querySelector('.cursor');if(c)c.remove();
+      const linea=ans[1]==='kit'?'NUDO KIT':'NUDO STUDIO';
+      const box=document.createElement('div');box.className='t-result';
+      box.innerHTML='<div class="rk">◉ Diagnóstico preliminar</div>'+
+        '<h3>Tu nudo apunta a '+linea+'.</h3>'+
+        '<p>Lo que más alivia primero: '+PROD[ans[0]]+'. En 30 minutos lo convertimos en un número: cuántas horas al mes recuperas y qué desatar primero.</p>'+
+        '<div class="cta"><a class="btn btn-p" href="#contacto">Agenda tu diagnóstico <span class="ar">→</span></a>'+
+        '<button class="t-reset" id="treset">↻ reiniciar</button></div>';
+      term.appendChild(box);term.scrollTop=term.scrollHeight;
+      document.getElementById('treset').onclick=()=>{qi=0;ans=[];term.innerHTML='';tboot()};
+    },700);
   }
-  document.getElementById('treset').onclick=()=>{qi=0;ans=[];tq.style.display='block';tres.style.display='none';renderQ()};
-  renderQ();
+  function tboot(){
+    tline('<span class="p">$</span> nudo scan --empresa=la-tuya','cmd');
+    tline('> leyendo señales del negocio…','cmt');
+    setTimeout(ask,350);
+  }
+  tboot();
 
   /* ---------- selector de paletas ---------- */
   const TNAMES={carbon:'carbón',medianoche:'medianoche',pizarra:'pizarra',lino:'lino',porcelana:'porcelana'};
@@ -702,6 +885,40 @@
       ticking=false;
     });
   },{passive:true});
+
+  /* ---------- carrusel de señales: flechas + drag ---------- */
+  const car=document.querySelector('.signals');
+  const step=()=>car.querySelector('.signal').getBoundingClientRect().width+18;
+  document.getElementById('sPrev').onclick=()=>car.scrollBy({left:-step(),behavior:'smooth'});
+  document.getElementById('sNext').onclick=()=>car.scrollBy({left:step(),behavior:'smooth'});
+  let drag=false,dx=0,sx=0;
+  car.addEventListener('pointerdown',e=>{drag=true;dx=e.clientX;sx=car.scrollLeft;car.classList.add('dragging')});
+  addEventListener('pointermove',e=>{if(drag)car.scrollLeft=sx-(e.clientX-dx)});
+  addEventListener('pointerup',()=>{drag=false;car.classList.remove('dragging')});
+
+  /* ---------- MOTION PACK (GSAP + ScrollTrigger + Lenis) ---------- */
+  // la cortina de intro se retira sola (CSS); la sacamos del DOM al terminar
+  setTimeout(()=>{const i=document.getElementById('intro');if(i)i.remove()},2000);
+
+  if(motionOn){
+    gsap.registerPlugin(ScrollTrigger);
+    // scroll NATIVO — sin inercia artificial: la página responde 1:1 al usuario
+
+    // la cuerda se dibuja acompañando el scroll (scrub corto, sin pin)
+    ScrollTrigger.create({trigger:'.untie2',start:'top 78%',end:'bottom 55%',scrub:.4,
+      onUpdate:st=>ropeAt(st.progress)});
+
+    // morph claro→oscuro al llegar a "Qué montamos"
+    ScrollTrigger.create({trigger:'#oferta',start:'top 62%',end:'max',
+      onEnter:()=>document.documentElement.dataset.mode='dark',
+      onLeaveBack:()=>delete document.documentElement.dataset.mode});
+
+    // micro-parallax en headers de sección
+    document.querySelectorAll('h2.sec').forEach(h=>{
+      gsap.fromTo(h,{y:34},{y:-10,ease:'none',
+        scrollTrigger:{trigger:h,start:'top 95%',end:'top 30%',scrub:.6}});
+    });
+  }
 })();
 </script>
 </body>
