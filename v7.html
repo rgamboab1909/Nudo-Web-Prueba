@@ -401,14 +401,9 @@ class Component extends DCLogic {
     }, { rootMargin: '-45% 0px -50% 0px' });
     ids.forEach(id => { const el = document.getElementById(id); if (el) this.io.observe(el); });
     // scroll pasivo: morph oscuro + cuerda (scrub corto, sin pin, sin dependencia externa)
-    const rope = document.querySelector('[data-rope]');
-    const nodes = document.querySelectorAll('[data-node]');
-    const done = document.querySelector('[data-rope-done]');
-    const of = document.getElementById('oferta');
-    const como = document.getElementById('como');
-    const step3 = document.querySelector('[data-step3]');
-    const step3Fill = document.querySelector('[data-step3-fill]');
     const paintStep3 = p => {
+      const step3 = document.querySelector('[data-step3]');
+      const step3Fill = document.querySelector('[data-step3-fill]');
       if (!step3 || !step3Fill) return;
       // se pinta entre el 70% y el 100% de la cuerda, de arriba hacia abajo
       const k = Math.min(1, Math.max(0, (p - 0.7) / 0.3));
@@ -419,6 +414,9 @@ class Component extends DCLogic {
     let target = 0, cur = reduce ? 1 : 0, raf = null;
     const paint = () => {
       raf = null;
+      const rope = document.querySelector('[data-rope]');
+      const nodes = document.querySelectorAll('[data-node]');
+      const done = document.querySelector('[data-rope-done]');
       cur += (target - cur) * 0.18;
       if (Math.abs(target - cur) < 0.002) cur = target;
       if (rope) rope.setAttribute('stroke-dashoffset', String(1 - cur));
@@ -428,6 +426,8 @@ class Component extends DCLogic {
       if (cur !== target) raf = requestAnimationFrame(paint);
     };
     this.onScroll = () => {
+      const of = document.getElementById('oferta');
+      const como = document.getElementById('como');
       if (of) { const dark = of.getBoundingClientRect().top < innerHeight * 0.4; if (dark !== this.state.dark) this.setState({ dark }); }
       if (como && !reduce) {
         const r = como.getBoundingClientRect();
@@ -486,12 +486,18 @@ class Component extends DCLogic {
       railRef: this.railRef,
       prevCard: () => rail() && rail().scrollBy({ left: -348, behavior: 'smooth' }),
       nextCard: () => rail() && rail().scrollBy({ left: 348, behavior: 'smooth' }),
-      dragStart: e => { const r = rail(); if (!r) return; this.drag = { x: e.clientX, sl: r.scrollLeft }; r.style.cursor = 'grabbing'; r.style.scrollSnapType = 'none'; },
+      dragStart: e => { if (e.pointerType === 'touch') return; const r = rail(); if (!r) return; this.drag = { x: e.clientX, sl: r.scrollLeft }; r.style.cursor = 'grabbing'; r.style.scrollSnapType = 'none'; },
       dragMove: e => { const r = rail(); if (!this.drag || !r) return; r.scrollLeft = this.drag.sl - (e.clientX - this.drag.x); },
       dragEnd: () => { const r = rail(); if (!r) return; this.drag = null; r.style.cursor = 'grab'; r.style.scrollSnapType = 'x proximity'; }
     };
   }
 }
 </script>
+<style id="nudo-mobile-patch">
+html,body{overflow-x:hidden}
+@media (max-width:840px){
+  [data-nav]{display:none !important}
+}
+</style>
 </body>
 </html>
