@@ -1,0 +1,1109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>RALLY · Liga de Pádel — Prototipo</title>
+<style>
+  :root{
+    --bg:#0c1420;
+    --bg2:#111d2e;
+    --card:#16233a;
+    --card2:#1c2c46;
+    --line:#25344f;
+    --txt:#eef4ff;
+    --muted:#8aa0c2;
+    --lime:#c8ff3d;
+    --lime-d:#a5e017;
+    --teal:#2ee6c5;
+    --blue:#3b82f6;
+    --gold:#ffd15c;
+    --silver:#cfd8e6;
+    --bronze:#e0975a;
+    --red:#ff5c73;
+    --green:#37e29a;
+    --radius:18px;
+    --shadow:0 10px 30px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+    background:radial-gradient(1200px 600px at 50% -10%, #16294a 0%, var(--bg) 55%);
+    color:var(--txt);
+    display:flex;justify-content:center;align-items:flex-start;
+    min-height:100vh;
+  }
+  /* Phone frame */
+  .phone{
+    width:100%;max-width:430px;height:100vh;height:100dvh;
+    background:var(--bg);position:relative;overflow:hidden;
+    display:flex;flex-direction:column;
+    box-shadow:0 0 0 1px rgba(255,255,255,.04), 0 30px 80px rgba(0,0,0,.5);
+  }
+  @media(min-width:460px){
+    body{align-items:center;padding:24px 0}
+    .phone{min-height:900px;height:900px;border-radius:44px;border:9px solid #05080e;overflow:hidden}
+  }
+  /* Status bar */
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;font-size:13px;font-weight:600;color:#cdd9ec}
+  .statusbar .dots{display:flex;gap:5px;align-items:center}
+  .statusbar .bat{width:22px;height:11px;border:1.5px solid #cdd9ec;border-radius:3px;position:relative;display:inline-block}
+  .statusbar .bat::after{content:"";position:absolute;left:1px;top:1px;bottom:1px;width:70%;background:var(--lime);border-radius:1px}
+
+  /* Header */
+  .appbar{padding:6px 20px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,var(--lime),var(--teal));display:grid;place-items:center;font-weight:900;color:#06251f;font-size:19px;box-shadow:0 6px 16px rgba(200,255,61,.25)}
+  .brand h1{font-size:19px;letter-spacing:.5px;font-weight:800}
+  .brand small{display:block;color:var(--muted);font-size:11px;font-weight:600;letter-spacing:.3px;margin-top:1px}
+  .avatarBtn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:grid;place-items:center;font-weight:800;font-size:15px;border:2px solid rgba(255,255,255,.15)}
+
+  /* Screen container */
+  .screens{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px 24px;scrollbar-width:none}
+  .screens::-webkit-scrollbar{display:none}
+  .screen{display:none;animation:fade .25s ease}
+  .screen.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  /* Generic */
+  .section-title{font-size:12px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);font-weight:700;margin:20px 6px 10px;display:flex;justify-content:space-between;align-items:center}
+  .section-title a{color:var(--lime);text-decoration:none;font-size:11px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+  .pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700}
+
+  /* Category tabs */
+  .cats{display:flex;gap:8px;overflow-x:auto;padding:4px 6px 2px;scrollbar-width:none}
+  .cats::-webkit-scrollbar{display:none}
+  .cat{flex:0 0 auto;padding:9px 16px;border-radius:999px;background:var(--card);border:1px solid var(--line);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;transition:.15s}
+  .cat.active{background:var(--lime);color:#082018;border-color:var(--lime)}
+
+  /* Hero season card */
+  .hero{background:linear-gradient(135deg,#17335a,#122744);border:1px solid #274068;border-radius:22px;padding:18px;position:relative;overflow:hidden;margin-top:4px}
+  .hero::after{content:"";position:absolute;right:-40px;top:-40px;width:160px;height:160px;background:radial-gradient(circle,rgba(200,255,61,.22),transparent 70%)}
+  .hero .row{display:flex;justify-content:space-between;align-items:flex-start;position:relative;z-index:1}
+  .hero h2{font-size:17px}
+  .hero p{color:var(--muted);font-size:12px;margin-top:3px}
+  .hero .stat{display:flex;gap:18px;margin-top:16px;position:relative;z-index:1}
+  .hero .stat div span{display:block;font-size:22px;font-weight:800;color:var(--lime)}
+  .hero .stat div small{color:var(--muted);font-size:11px}
+  .countdown{background:rgba(255,255,255,.08);border-radius:12px;padding:8px 12px;text-align:center}
+  .countdown b{display:block;font-size:20px;color:var(--gold)}
+  .countdown small{font-size:10px;color:var(--muted)}
+
+  /* Ranking rows */
+  .rank-list{display:flex;flex-direction:column;gap:8px;margin-top:4px}
+  .rrow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px 14px}
+  .rrow.me{border-color:var(--lime);background:linear-gradient(90deg,rgba(200,255,61,.08),var(--card))}
+  .pos{width:30px;text-align:center;font-weight:800;font-size:16px;color:var(--muted)}
+  .pos.p1{color:var(--gold)}.pos.p2{color:var(--silver)}.pos.p3{color:var(--bronze)}
+  .pmedal{font-size:18px}
+  .pav{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px;flex:0 0 auto;color:#0a1a2f}
+  .pinfo{flex:1;min-width:0}
+  .pinfo .pn{font-weight:700;font-size:14px;display:flex;align-items:center;gap:6px}
+  .pinfo .ps{color:var(--muted);font-size:11px;margin-top:2px;display:flex;align-items:center;gap:8px}
+  .pts{text-align:right}
+  .pts b{font-size:16px;color:var(--lime)}
+  .pts small{display:block;color:var(--muted);font-size:10px}
+  .mv{font-size:11px;font-weight:800;display:flex;align-items:center;gap:2px}
+  .mv.up{color:var(--green)}.mv.dn{color:var(--red)}.mv.eq{color:var(--muted)}
+  .streak{color:var(--gold);font-weight:700}
+
+  /* Retos */
+  .seg{display:flex;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin:6px 0 14px}
+  .seg button{flex:1;padding:9px;border:0;background:transparent;color:var(--muted);font-weight:700;font-size:13px;border-radius:10px;cursor:pointer}
+  .seg button.active{background:var(--lime);color:#082018}
+  .reto{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+  .reto .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  .reto .day{font-size:11px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.6px}
+  .versus{display:flex;align-items:center;gap:10px}
+  .team{flex:1}
+  .team .tp{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+  .team .tp:last-child{margin-bottom:0}
+  .team.right .tp{flex-direction:row-reverse;text-align:right}
+  .tp .tav{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:800;color:#0a1a2f;flex:0 0 auto}
+  .tp .tn{font-size:13px;font-weight:600}
+  .vs{flex:0 0 auto;text-align:center;min-width:52px}
+  .vs .score{font-size:20px;font-weight:800}
+  .vs .score .w{color:var(--lime)}
+  .vs .vslabel{font-size:11px;color:var(--muted);font-weight:800;background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:4px 8px}
+  .reto .foot{display:flex;gap:8px;margin-top:12px}
+  .btn{flex:1;padding:10px;border-radius:11px;border:0;font-weight:700;font-size:13px;cursor:pointer}
+  .btn.primary{background:var(--lime);color:#082018}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--txt)}
+  .badge-win{background:rgba(55,226,154,.15);color:var(--green);border:1px solid rgba(55,226,154,.3)}
+  .badge-pend{background:rgba(255,209,92,.14);color:var(--gold);border:1px solid rgba(255,209,92,.3)}
+
+  /* Profile */
+  .profile-head{display:flex;flex-direction:column;align-items:center;text-align:center;padding:10px 0 4px}
+  .bigav{width:82px;height:82px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#8b5cf6);display:grid;place-items:center;font-size:30px;font-weight:800;border:3px solid var(--lime);box-shadow:0 8px 24px rgba(59,130,246,.35)}
+  .profile-head h2{margin-top:12px;font-size:22px}
+  .profile-head .sub{color:var(--muted);font-size:13px;margin-top:3px}
+  .lvlbar{margin:16px 4px 6px}
+  .lvlbar .top{display:flex;justify-content:space-between;font-size:12px;margin-bottom:7px}
+  .lvlbar .track{height:12px;background:var(--card2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+  .lvlbar .fill{height:100%;background:linear-gradient(90deg,var(--lime),var(--teal));border-radius:999px}
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px}
+  .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 6px;text-align:center}
+  .kpi b{display:block;font-size:19px;color:var(--lime)}
+  .kpi small{color:var(--muted);font-size:10px}
+  .logros{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px}
+  .logro{text-align:center}
+  .logro .ic{width:100%;aspect-ratio:1;border-radius:16px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:26px}
+  .logro.on .ic{background:linear-gradient(135deg,rgba(200,255,61,.18),rgba(46,230,197,.12));border-color:var(--lime)}
+  .logro.off .ic{opacity:.35;filter:grayscale(1)}
+  .logro small{display:block;font-size:10px;color:var(--muted);margin-top:5px}
+
+  /* Share card */
+  .share-preview{background:linear-gradient(150deg,#0f2440,#1b1140);border-radius:22px;padding:22px;position:relative;overflow:hidden;border:1px solid #2b3f66}
+  .share-preview::before{content:"";position:absolute;inset:0;background:radial-gradient(400px 200px at 80% 0%,rgba(200,255,61,.18),transparent)}
+  .sp-head{display:flex;justify-content:space-between;align-items:center;position:relative}
+  .sp-tag{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--lime)}
+  .sp-body{position:relative;text-align:center;padding:14px 0 6px}
+  .sp-body .win{font-size:13px;color:var(--gold);font-weight:800;letter-spacing:2px}
+  .sp-teams{display:flex;align-items:center;justify-content:center;gap:14px;margin:14px 0}
+  .sp-teams .t{font-weight:800;font-size:15px}
+  .sp-score{font-size:44px;font-weight:900;line-height:1}
+  .sp-score .a{color:var(--lime)}.sp-score .b{color:#7f92b3}
+  .sp-meta{color:var(--muted);font-size:12px;margin-top:8px}
+  .socialbtns{display:flex;gap:10px;margin-top:14px}
+  .socialbtns .btn{display:flex;align-items:center;justify-content:center;gap:6px}
+
+  /* Reservas stub */
+  .court{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;display:flex;gap:12px;align-items:center}
+  .court .cimg{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,#153b6b,#0d2647);display:grid;place-items:center;font-size:24px;flex:0 0 auto}
+  .slots{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .slot{font-size:12px;font-weight:700;padding:7px 11px;border-radius:9px;border:1px solid var(--line);background:var(--bg2);color:var(--muted);font-family:inherit;cursor:default}
+  .slot.free{color:var(--lime);border-color:rgba(200,255,61,.4);cursor:pointer;transition:.12s}
+  .slot.free:hover{background:rgba(200,255,61,.10)}
+  .slot.sel{background:var(--lime);color:#082018;border-color:var(--lime);box-shadow:0 4px 12px rgba(200,255,61,.3)}
+  .slot.taken{opacity:.4;text-decoration:line-through;cursor:not-allowed}
+  .btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+  .court.active{border-color:var(--lime)}
+
+  /* Bottom nav */
+  .tabbar{flex:0 0 auto;background:rgba(12,20,32,.96);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:20}
+  .tab{flex:1;background:none;border:0;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;font-weight:700;cursor:pointer;padding:5px 0}
+  .tab .ti{font-size:20px;line-height:1}
+  .tab.active{color:var(--lime)}
+  .tab.central .ti{width:44px;height:44px;margin-top:-22px;border-radius:16px;background:linear-gradient(135deg,var(--lime),var(--teal));display:grid;place-items:center;color:#06251f;box-shadow:0 8px 20px rgba(200,255,61,.35);font-size:24px}
+
+  /* Toast */
+  .toast{position:absolute;bottom:96px;left:50%;transform:translateX(-50%) translateY(20px);background:#08331f;border:1px solid var(--green);color:#c6ffe4;padding:11px 18px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;pointer-events:none;transition:.3s;z-index:40;white-space:nowrap}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .note{font-size:11px;color:var(--muted);text-align:center;margin:16px 8px 4px;line-height:1.5}
+  .demo-flag{position:absolute;top:0;left:0;right:0;text-align:center;background:linear-gradient(90deg,var(--lime),var(--teal));color:#06251f;font-size:10px;font-weight:800;letter-spacing:1px;padding:3px;z-index:50}
+
+  /* Back button + screen header */
+  .screen-head{display:flex;align-items:center;gap:10px;margin:8px 2px 4px}
+  .backbtn{background:var(--card);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer}
+  .screen-head h2{font-size:18px}
+
+  /* Rules */
+  .rule-card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:12px}
+  .rule-card h3{font-size:14px;display:flex;align-items:center;gap:9px;margin-bottom:11px}
+  .rule-card .ri{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,rgba(200,255,61,.18),rgba(46,230,197,.12));border:1px solid var(--line);display:grid;place-items:center;font-size:17px;flex:0 0 auto}
+  .rule-list{list-style:none;display:block}
+  .rule-list li{position:relative;padding-left:17px;margin-bottom:11px;font-size:13.5px;line-height:1.55;color:#d7e2f2}
+  .rule-list li:last-child{margin-bottom:0}
+  .rule-list li::before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--lime)}
+  .rule-list b{color:#fff;font-weight:700}
+  .tag-i{display:inline;background:var(--bg2);border:1px solid var(--line);border-radius:6px;padding:1px 7px;font-size:12px;font-weight:700;color:var(--teal);white-space:nowrap}
+  .rules-label{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--muted);font-weight:800;margin:18px 4px 10px}
+  .rule-card.league{border-color:rgba(200,255,61,.4);background:linear-gradient(180deg,rgba(200,255,61,.07),var(--card))}
+  .rule-card.league .ri{background:var(--lime);border-color:var(--lime)}
+
+  /* Bracket / Llaves */
+  .stage-track{display:flex;gap:6px;margin:8px 2px 16px}
+  .stage{flex:1;text-align:center;font-size:10px;font-weight:800;color:var(--muted);padding-bottom:8px;border-bottom:3px solid var(--line);letter-spacing:.3px}
+  .stage small{display:block;font-size:9px;font-weight:600;margin-top:3px;opacity:.8}
+  .stage.done{color:var(--green);border-color:var(--green)}
+  .stage.now{color:var(--lime);border-color:var(--lime)}
+  .scroll-hint{font-size:11px;color:var(--muted);text-align:right;margin:0 4px 6px}
+  .bracket{display:flex;gap:18px;overflow-x:auto;padding:4px 2px 12px;scrollbar-width:none}
+  .bracket::-webkit-scrollbar{display:none}
+  .round{flex:0 0 auto;display:flex;flex-direction:column;justify-content:space-around;gap:14px;min-width:172px}
+  .round>h4{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);text-align:center;margin-bottom:2px}
+  .match{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+  .mteam{display:flex;justify-content:space-between;align-items:center;padding:9px 11px;font-size:12px;font-weight:600;gap:8px}
+  .mteam+.mteam{border-top:1px solid var(--line)}
+  .mteam.win{background:linear-gradient(90deg,rgba(200,255,61,.12),transparent)}
+  .mteam.win .mn{color:var(--lime);font-weight:800}
+  .mteam .mn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .mteam .msc{font-weight:800;flex:0 0 auto;color:var(--muted)}
+  .mteam.win .msc{color:var(--lime)}
+  .mteam.tbd{color:#5f7295;font-style:italic}
+  .mtag{font-size:9px;text-align:center;padding:4px;color:var(--muted);background:var(--bg2);font-weight:700;letter-spacing:.5px}
+  .mtag.live{color:var(--gold)}
+  .mtag.done{color:var(--green)}
+  .champ{align-self:center;text-align:center;background:linear-gradient(150deg,#20325a,#2a1c4d);border:1px solid var(--gold);border-radius:16px;padding:18px 16px;min-width:150px}
+  .champ .cup{font-size:34px}
+  .champ .lbl{font-size:10px;letter-spacing:1px;color:var(--gold);font-weight:800;margin-top:6px}
+  .champ .who{font-size:13px;color:var(--muted);margin-top:4px;font-weight:700}
+
+  /* Bottom sheet: nuevo reto */
+  .sheet-backdrop{position:absolute;inset:0;background:rgba(3,7,14,.62);backdrop-filter:blur(3px);opacity:0;pointer-events:none;transition:.25s;z-index:60}
+  .sheet-backdrop.show{opacity:1;pointer-events:auto}
+  .sheet{position:absolute;left:0;right:0;bottom:0;background:var(--bg2);border-top-left-radius:26px;border-top-right-radius:26px;border:1px solid var(--line);border-bottom:0;transform:translateY(110%);transition:transform .32s cubic-bezier(.2,.8,.2,1);z-index:70;max-height:94%;overflow-y:auto;padding:6px 18px 22px;scrollbar-width:none}
+  .sheet.show{transform:translateY(0)}
+  .sheet::-webkit-scrollbar{display:none}
+  .grab{width:42px;height:5px;border-radius:3px;background:#33456b;margin:8px auto 8px}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between}
+  .sheet-head h3{font-size:19px}
+  .sheet-head .x{background:var(--card);border:1px solid var(--line);color:var(--muted);width:32px;height:32px;border-radius:50%;font-size:16px;cursor:pointer}
+  .sheet .sub{color:var(--muted);font-size:12px;margin:2px 2px 4px}
+  .field{margin:16px 2px}
+  .field>label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:800;margin-bottom:10px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .fchip{padding:9px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--txt);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:7px;transition:.15s}
+  .fchip .d{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:9px;font-weight:800;color:#0a1a2f;flex:0 0 auto}
+  .fchip.sel{background:var(--lime);color:#082018;border-color:var(--lime)}
+  .fchip.fixed{background:var(--card2);border-style:dashed;cursor:default;color:var(--muted)}
+  .rivalgrid{display:flex;flex-direction:column;gap:8px}
+  .rivalcard{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:14px;border:1px solid var(--line);background:var(--card);cursor:pointer;transition:.15s}
+  .rivalcard.sel{border-color:var(--lime);background:linear-gradient(90deg,rgba(200,255,61,.10),var(--card))}
+  .rivalcard .rp{font-size:13px;font-weight:700}
+  .rivalcard .rk{margin-left:auto;font-size:11px;color:var(--muted);text-align:right}
+  .rivalcard .chk{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;display:grid;place-items:center;font-size:12px;color:#082018;font-weight:900}
+  .rivalcard.sel .chk{background:var(--lime);border-color:var(--lime)}
+  .rivalcard.sel .chk::after{content:"✓"}
+  .format-note{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:9px;margin-top:14px}
+  .sheet-foot{display:flex;gap:10px;margin-top:18px}
+
+  /* Partidas abiertas (matchmaker) */
+  .lvl-banner{display:flex;align-items:center;gap:10px;background:linear-gradient(90deg,rgba(46,230,197,.12),var(--card));border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-bottom:12px}
+  .lvl-banner .lvn{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--blue));display:grid;place-items:center;font-weight:900;font-size:14px;color:#04231f;flex:0 0 auto}
+  .lvl-banner .lvt{font-size:12px;color:var(--muted)}
+  .lvl-banner .lvt b{color:var(--txt);font-size:14px;display:block}
+  .omatch{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+  .om-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:3px}
+  .om-venue{font-weight:700;font-size:14px}
+  .om-lvl{font-size:11px;font-weight:800;color:var(--teal);background:var(--bg2);border:1px solid var(--line);border-radius:8px;padding:3px 8px;white-space:nowrap}
+  .om-meta{color:var(--muted);font-size:12px;margin-bottom:12px}
+  .om-players{display:flex;gap:7px;margin-bottom:12px}
+  .om-slot{flex:1;text-align:center;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:9px 3px}
+  .om-slot .oav{width:34px;height:34px;border-radius:50%;margin:0 auto 5px;display:grid;place-items:center;font-weight:800;font-size:12px;color:#0a1a2f}
+  .om-slot .onm{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .om-slot .olv{font-size:10px;color:var(--muted)}
+  .om-slot.free{border-style:dashed;border-color:rgba(200,255,61,.35)}
+  .om-slot.free .oav{background:transparent;border:1.5px dashed var(--muted);color:var(--muted)}
+  .om-slot.you{border-color:var(--lime);background:linear-gradient(180deg,rgba(200,255,61,.10),var(--bg2))}
+  .om-fit{font-size:11px;font-weight:700;margin-bottom:10px}
+  .om-fit.ok{color:var(--green)}.om-fit.no{color:var(--gold)}
+  .svc-book{margin-left:auto;align-self:center;background:var(--lime);color:#082018;border:0;border-radius:10px;padding:9px 14px;font-weight:800;font-size:12px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="demo-flag">PROTOTIPO · DATOS DEL PIZARRÓN "RANKING LORENA"</div>
+
+  <div class="statusbar" style="margin-top:16px">
+    <span>9:41</span>
+    <span class="dots">📶 5G <span class="bat"></span></span>
+  </div>
+
+  <div class="appbar">
+    <div class="brand">
+      <div class="logo">R</div>
+      <div>
+        <h1>RALLY</h1>
+        <small>Liga Pádel · Chiclayo</small>
+      </div>
+    </div>
+    <div class="avatarBtn">RB</div>
+  </div>
+
+  <div class="screens">
+
+    <!-- ============ LIGA ============ -->
+    <section class="screen active" id="s-liga">
+      <div class="hero">
+        <div class="row">
+          <div>
+            <h2>🏆 Liga Lorena</h2>
+            <p>Temporada Julio 2026 · Jornada 6</p>
+          </div>
+          <div class="countdown">
+            <b>02</b><small>días p/ cierre</small>
+          </div>
+        </div>
+        <div class="stat">
+          <div><span>36</span><small>jugadores</small></div>
+          <div><span>7</span><small>retos activos</small></div>
+          <div><span>128</span><small>partidos</small></div>
+        </div>
+      </div>
+
+      <div class="section-title" style="margin-top:16px">Categorías</div>
+      <div class="cats">
+        <div class="cat active" onclick="setCat(this,'4')">4ª Categoría</div>
+        <div class="cat" onclick="setCat(this,'5')">5ª Categoría</div>
+        <div class="cat" onclick="setCat(this,'6')">6ª Categoría</div>
+      </div>
+
+      <div class="section-title">Ranking <a href="#" onclick="go('reglas');return false">Ver reglas ›</a></div>
+      <div class="rank-list" id="ranklist"></div>
+
+      <p class="note">Los puntos suman por victoria + bonus por ganar en sets corridos y diferencia de games. El Top 3 mensual gana medalla 🥇🥈🥉.</p>
+    </section>
+
+    <!-- ============ RETOS ============ -->
+    <section class="screen" id="s-retos">
+      <div class="section-title" style="margin-top:8px">Retos</div>
+      <div class="seg">
+        <button class="active" onclick="setSeg(this,'pend')">Por jugar</button>
+        <button onclick="setSeg(this,'done')">Resultados</button>
+      </div>
+      <div id="retos-pend">
+        <div class="reto">
+          <div class="top"><span class="day">📅 Miércoles</span><span class="pill badge-pend">Pendiente</span></div>
+          <div class="versus">
+            <div class="team">
+              <div class="tp"><span class="tav" style="background:#c8ff3d">JM</span><span class="tn">Juanma</span></div>
+              <div class="tp"><span class="tav" style="background:#2ee6c5">MI</span><span class="tn">Mina</span></div>
+            </div>
+            <div class="vs"><span class="vslabel">VS</span></div>
+            <div class="team right">
+              <div class="tp"><span class="tav" style="background:#3b82f6">JP</span><span class="tn">JP</span></div>
+              <div class="tp"><span class="tav" style="background:#8b5cf6">JO</span><span class="tn">Joan</span></div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="btn primary" onclick="toast('✅ Resultado enviado. Espera confirmación rival.')">Cargar resultado</button>
+            <button class="btn ghost" onclick="toast('📆 Reto reprogramado')">Reprogramar</button>
+          </div>
+        </div>
+
+        <div class="reto">
+          <div class="top"><span class="day">📅 Jueves</span><span class="pill badge-pend">Pendiente</span></div>
+          <div class="versus">
+            <div class="team">
+              <div class="tp"><span class="tav" style="background:#ff9f5c">PI</span><span class="tn">Piero</span></div>
+              <div class="tp"><span class="tav" style="background:#ff5c73">BR</span><span class="tn">Bryan</span></div>
+            </div>
+            <div class="vs"><span class="vslabel">VS</span></div>
+            <div class="team right">
+              <div class="tp"><span class="tav" style="background:#c8ff3d">AL</span><span class="tn">Ale</span></div>
+              <div class="tp"><span class="tav" style="background:#f472b6">DA</span><span class="tn">Daniela</span></div>
+            </div>
+          </div>
+          <div class="foot">
+            <button class="btn primary" onclick="toast('✅ Resultado enviado. Espera confirmación rival.')">Cargar resultado</button>
+            <button class="btn ghost" onclick="toast('📆 Reto reprogramado')">Reprogramar</button>
+          </div>
+        </div>
+
+        <button class="btn primary" style="width:100%;padding:14px;margin-top:6px" onclick="openReto()">+ Lanzar nuevo reto</button>
+      </div>
+
+      <div id="retos-done" style="display:none">
+        <div class="reto">
+          <div class="top"><span class="day">📅 Miércoles</span><span class="pill badge-win">Confirmado</span></div>
+          <div class="versus">
+            <div class="team">
+              <div class="tp"><span class="tav" style="background:#c8ff3d">ER</span><span class="tn">Erick</span></div>
+              <div class="tp"><span class="tav" style="background:#2ee6c5">MA</span><span class="tn">Marcelo</span></div>
+            </div>
+            <div class="vs"><div class="score"><span class="w">2</span>-1</div></div>
+            <div class="team right">
+              <div class="tp"><span class="tav" style="background:#3b82f6">JU</span><span class="tn">Juancho</span></div>
+              <div class="tp"><span class="tav" style="background:#8b5cf6">AN</span><span class="tn">Andree</span></div>
+            </div>
+          </div>
+          <div class="foot"><button class="btn ghost" onclick="go('share')">📲 Compartir resultado</button></div>
+        </div>
+
+        <div class="reto">
+          <div class="top"><span class="day">📅 Miércoles</span><span class="pill badge-win">Confirmado</span></div>
+          <div class="versus">
+            <div class="team">
+              <div class="tp"><span class="tav" style="background:#ff9f5c">KE</span><span class="tn">Kevin</span></div>
+              <div class="tp"><span class="tav" style="background:#ff5c73">AN</span><span class="tn">Andree</span></div>
+            </div>
+            <div class="vs"><div class="score">0-<span class="w">2</span></div></div>
+            <div class="team right">
+              <div class="tp"><span class="tav" style="background:#c8ff3d">JO</span><span class="tn">Joan</span></div>
+              <div class="tp"><span class="tav" style="background:#3b82f6">JU</span><span class="tn">Juancho</span></div>
+            </div>
+          </div>
+          <div class="foot"><button class="btn ghost" onclick="go('share')">📲 Compartir resultado</button></div>
+        </div>
+
+        <div class="reto">
+          <div class="top"><span class="day">📅 Jueves</span><span class="pill badge-win">Confirmado</span></div>
+          <div class="versus">
+            <div class="team">
+              <div class="tp"><span class="tav" style="background:#c8ff3d">AN</span><span class="tn">Alonso N.</span></div>
+              <div class="tp"><span class="tav" style="background:#2ee6c5">MA</span><span class="tn">Marcelo</span></div>
+            </div>
+            <div class="vs"><div class="score"><span class="w">2</span>-1</div></div>
+            <div class="team right">
+              <div class="tp"><span class="tav" style="background:#ff5c73">ER</span><span class="tn">Erick</span></div>
+              <div class="tp"><span class="tav" style="background:#8b5cf6">JO</span><span class="tn">Joan</span></div>
+            </div>
+          </div>
+          <div class="foot"><button class="btn ghost" onclick="go('share')">📲 Compartir resultado</button></div>
+        </div>
+
+        <div class="reto">
+          <div class="top"><span class="day">📅 Jueves</span><span class="pill badge-win">Confirmado</span></div>
+          <div class="versus">
+            <div class="team">
+              <div class="tp"><span class="tav" style="background:#ff9f5c">AJ</span><span class="tn">Álvaro J.</span></div>
+              <div class="tp"><span class="tav" style="background:#3b82f6">FV</span><span class="tn">Fabricio V.</span></div>
+            </div>
+            <div class="vs"><div class="score">0-<span class="w">2</span></div></div>
+            <div class="team right">
+              <div class="tp"><span class="tav" style="background:#c8ff3d">AR</span><span class="tn">Álvaro R.</span></div>
+              <div class="tp"><span class="tav" style="background:#f472b6">SE</span><span class="tn">Secochi</span></div>
+            </div>
+          </div>
+          <div class="foot"><button class="btn ghost" onclick="go('share')">📲 Compartir resultado</button></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ PERFIL ============ -->
+    <section class="screen" id="s-perfil">
+      <div class="profile-head">
+        <div class="bigav">RB</div>
+        <h2>Rodrigo B.</h2>
+        <div class="sub">6ª Categoría · Nivel 3.8 · Puesto #2 🥈</div>
+        <span class="pill" style="background:rgba(255,209,92,.15);color:var(--gold);border:1px solid rgba(255,209,92,.3);margin-top:10px">🔥 Racha de 3 victorias</span>
+      </div>
+
+      <div class="lvlbar">
+        <div class="top"><span>Progreso a 5ª Categoría</span><span style="color:var(--lime);font-weight:700">720 / 900 XP</span></div>
+        <div class="track"><div class="fill" style="width:80%"></div></div>
+      </div>
+
+      <div class="kpis">
+        <div class="kpi"><b>18</b><small>Partidos</small></div>
+        <div class="kpi"><b>12</b><small>Victorias</small></div>
+        <div class="kpi"><b>67%</b><small>Efectiv.</small></div>
+        <div class="kpi"><b>720</b><small>Puntos</small></div>
+      </div>
+
+      <div class="section-title">Logros</div>
+      <div class="logros">
+        <div class="logro on"><div class="ic">🥈</div><small>Podio del mes</small></div>
+        <div class="logro on"><div class="ic">🔥</div><small>Racha x3</small></div>
+        <div class="logro on"><div class="ic">🎯</div><small>Set corrido</small></div>
+        <div class="logro on"><div class="ic">⚔️</div><small>5 retos</small></div>
+        <div class="logro off"><div class="ic">👑</div><small>#1 categoría</small></div>
+        <div class="logro off"><div class="ic">💯</div><small>10 victorias seguidas</small></div>
+        <div class="logro off"><div class="ic">🌟</div><small>Ascenso</small></div>
+        <div class="logro off"><div class="ic">🏅</div><small>MVP jornada</small></div>
+      </div>
+
+      <div class="section-title">Compañeros frecuentes</div>
+      <div class="card" style="display:flex;gap:18px;justify-content:space-around;text-align:center">
+        <div><div class="pav" style="background:#2ee6c5;margin:0 auto 6px">MI</div><small style="font-size:11px">Mina<br><span style="color:var(--green)">5-1</span></small></div>
+        <div><div class="pav" style="background:#3b82f6;margin:0 auto 6px">JO</div><small style="font-size:11px">Joan<br><span style="color:var(--green)">3-2</span></small></div>
+        <div><div class="pav" style="background:#ff9f5c;margin:0 auto 6px">AG</div><small style="font-size:11px">Agu<br><span style="color:var(--red)">1-2</span></small></div>
+      </div>
+
+      <button class="btn ghost" style="width:100%;padding:14px;margin-top:16px" onclick="go('share')">📲 Compartir mi tarjeta de perfil</button>
+    </section>
+
+    <!-- ============ COMPARTIR ============ -->
+    <section class="screen" id="s-share">
+      <div class="section-title" style="margin-top:8px">Compartir en redes</div>
+      <div class="share-preview">
+        <div class="sp-head">
+          <span class="sp-tag">RALLY · LIGA LORENA</span>
+          <span style="font-size:11px;color:var(--muted)">Jornada 6</span>
+        </div>
+        <div class="sp-body">
+          <div class="win">🏆 VICTORIA</div>
+          <div class="sp-teams">
+            <div class="t" style="color:var(--lime)">Erick / Marcelo</div>
+          </div>
+          <div class="sp-score"><span class="a">2</span> <span style="font-size:24px;color:var(--muted)">–</span> <span class="b">1</span></div>
+          <div class="sp-teams"><div class="t" style="color:#7f92b3">Juancho / Andree</div></div>
+          <div class="sp-meta">Reto de 6ª Cat. · Chiclayo · 24 Jul</div>
+        </div>
+      </div>
+
+      <div class="socialbtns">
+        <button class="btn primary" onclick="toast('📸 Historia lista para Instagram')">📸 Instagram</button>
+        <button class="btn ghost" onclick="toast('💬 Compartido a WhatsApp')">💬 WhatsApp</button>
+      </div>
+      <div class="socialbtns">
+        <button class="btn ghost" onclick="toast('🎵 Reel exportado')">🎵 TikTok</button>
+        <button class="btn ghost" onclick="toast('🖼️ Imagen descargada')">⬇️ Descargar</button>
+      </div>
+
+      <div class="section-title">Otras plantillas</div>
+      <div class="logros" style="grid-template-columns:repeat(3,1fr)">
+        <div class="logro on"><div class="ic" style="font-size:20px">🏆</div><small>Resultado</small></div>
+        <div class="logro on"><div class="ic" style="font-size:20px">📊</div><small>Ranking</small></div>
+        <div class="logro on"><div class="ic" style="font-size:20px">🔥</div><small>Racha</small></div>
+        <div class="logro on"><div class="ic" style="font-size:20px">⚔️</div><small>Nuevo reto</small></div>
+        <div class="logro on"><div class="ic" style="font-size:20px">🥇</div><small>Podio mes</small></div>
+        <div class="logro on"><div class="ic" style="font-size:20px">🌟</div><small>Ascenso</small></div>
+      </div>
+      <p class="note">Cada resultado, ascenso o racha genera una imagen lista para publicar con el branding del club. Ideal para llenar el feed de Instagram del club.</p>
+    </section>
+
+    <!-- ============ RESERVAS ============ -->
+    <section class="screen" id="s-reservas">
+      <div class="section-title" style="margin-top:8px">Reservas <span class="pill" style="background:rgba(200,255,61,.15);color:var(--lime);border:1px solid rgba(200,255,61,.3)">🚀 Fase 1 · el corazón del app</span></div>
+
+      <div class="seg" id="resv-seg">
+        <button class="active" onclick="setResvSeg(this,'canchas')">Canchas</button>
+        <button onclick="setResvSeg(this,'abiertas')">Abiertas</button>
+        <button onclick="setResvSeg(this,'servicios')">Servicios</button>
+      </div>
+
+      <!-- Canchas -->
+      <div id="resv-canchas">
+        <div class="cats" id="r-days" style="margin-bottom:8px">
+          <div class="cat active" onclick="setDay(this,'hoy')">Hoy</div>
+          <div class="cat" onclick="setDay(this,'manana')">Mañana</div>
+          <div class="cat" onclick="setDay(this,'vie25')">Vie 25</div>
+          <div class="cat" onclick="setDay(this,'sab26')">Sáb 26</div>
+        </div>
+        <div id="courts"></div>
+        <button class="btn primary" id="reserveBtn" style="width:100%;padding:14px;margin-top:6px" onclick="confirmReserva()" disabled>Elige un horario disponible</button>
+        <p class="note">Precio diferenciado por cancha (indoor / outdoor). Reserva directo el horario de tu reto y paga en la app.</p>
+      </div>
+
+      <!-- Partidas abiertas (matchmaker por nivel) -->
+      <div id="resv-abiertas" style="display:none">
+        <div class="lvl-banner">
+          <div class="lvn" id="ownlvl">3.8</div>
+          <div class="lvt">Tu nivel de juego<b>Nivel 3.8 · 6ª Categoría</b></div>
+        </div>
+        <div id="openmatches"></div>
+        <button class="btn primary" style="width:100%;padding:14px;margin-top:2px" onclick="toast('🎾 Abre tu cancha y deja lugares libres para que se apunten')">+ Abrir una partida</button>
+        <p class="note">La app empareja por nivel: se apuntan jugadores que no se conocen y arma partidos parejos según el historial de cada uno.</p>
+      </div>
+
+      <!-- Servicios del complejo -->
+      <div id="resv-servicios" style="display:none">
+        <div class="court">
+          <div class="cimg">🧖</div>
+          <div style="flex:1"><div style="font-weight:700">Sauna</div><div style="color:var(--muted);font-size:11px">Sesión 45 min · S/ 20</div></div>
+          <button class="svc-book" onclick="toast('🧖 Sauna reservada · 45 min')">Reservar</button>
+        </div>
+        <div class="court">
+          <div class="cimg">🏋️</div>
+          <div style="flex:1"><div style="font-weight:700">Gimnasio</div><div style="color:var(--muted);font-size:11px">Pase del día · S/ 15</div></div>
+          <button class="svc-book" onclick="toast('🏋️ Pase de gimnasio agregado')">Reservar</button>
+        </div>
+        <div class="court">
+          <div class="cimg">🎓</div>
+          <div style="flex:1"><div style="font-weight:700">Clase con coach</div><div style="color:var(--muted);font-size:11px">1 hora · S/ 60</div></div>
+          <button class="svc-book" onclick="toast('🎓 Clase con coach solicitada')">Reservar</button>
+        </div>
+        <div class="court">
+          <div class="cimg">☕</div>
+          <div style="flex:1"><div style="font-weight:700">Cafetería</div><div style="color:var(--muted);font-size:11px">Pide a tu cancha</div></div>
+          <button class="svc-book" onclick="toast('☕ Pedido enviado a tu cancha')">Pedir</button>
+        </div>
+        <p class="note">Es el app del complejo: sauna, gimnasio, clases y cafetería en un mismo lugar.</p>
+      </div>
+    </section>
+
+    <!-- ============ LLAVES / PLAYOFFS ============ -->
+    <section class="screen" id="s-llaves">
+      <div class="screen-head">
+        <h2>🏆 Llaves del Campeonato</h2>
+      </div>
+      <p class="note" style="text-align:left;margin:4px 2px 6px">Los mejores 8 del ranking de cada categoría clasifican a los playoffs. Aquí ves en qué etapa va el campeonato, no solo quién va primero.</p>
+
+      <div class="cats" style="margin:6px 0 10px">
+        <div class="cat active" onclick="setBracketCat(this,'6')">6ª Categoría</div>
+        <div class="cat" onclick="setBracketCat(this,'5')">5ª Categoría</div>
+        <div class="cat" onclick="setBracketCat(this,'4')">4ª Categoría</div>
+      </div>
+
+      <div class="stage-track">
+        <div class="stage done">Liga<small>Cerrada ✓</small></div>
+        <div class="stage now">Cuartos<small>En curso</small></div>
+        <div class="stage">Semis<small>26 Jul</small></div>
+        <div class="stage">Final<small>28 Jul</small></div>
+      </div>
+
+      <div class="scroll-hint">desliza para ver todo →</div>
+      <div class="bracket" id="bracket"></div>
+
+      <div class="section-title">Camino al título</div>
+      <div class="card" style="display:flex;justify-content:space-around;text-align:center">
+        <div><b style="font-size:20px;color:var(--lime);display:block">8</b><small style="color:var(--muted);font-size:11px">Parejas</small></div>
+        <div><b style="font-size:20px;color:var(--lime);display:block">3/4</b><small style="color:var(--muted);font-size:11px">Cuartos jugados</small></div>
+        <div><b style="font-size:20px;color:var(--gold);display:block">4</b><small style="color:var(--muted);font-size:11px">Días para la final</small></div>
+      </div>
+      <button class="btn ghost" style="width:100%;padding:13px;margin-top:14px" onclick="go('share')">📲 Compartir la llave del campeonato</button>
+      <p class="note">Formato de eliminación directa al mejor de 3 sets. Cada resultado confirmado avanza automáticamente a la pareja ganadora a la siguiente ronda.</p>
+    </section>
+
+    <!-- ============ REGLAS ============ -->
+    <section class="screen" id="s-reglas">
+      <div class="screen-head">
+        <button class="backbtn" onclick="go('liga')">‹ Volver</button>
+        <h2>📖 Reglas</h2>
+      </div>
+
+      <div class="rules-label" style="margin-top:6px">🏆 Reglas del torneo</div>
+
+      <div class="rule-card league">
+        <h3><span class="ri">🎯</span> Cómo se suman puntos</h3>
+        <ul class="rule-list">
+          <li>Cada <b>victoria</b> suma puntos al ranking de tu categoría.</li>
+          <li>Ganar en <b>sets corridos</b> (2–0) da <b>bonus</b>.</li>
+          <li>La <b>diferencia de games</b> también otorga puntos extra: no es lo mismo ganar apretado que dominar.</li>
+        </ul>
+      </div>
+
+      <div class="rule-card league">
+        <h3><span class="ri">⚔️</span> Retos y categorías</h3>
+        <ul class="rule-list">
+          <li>Juegas dentro de tu <b>categoría</b> (4ª, 5ª, 6ª).</li>
+          <li>Los <b>retos</b> son partidos en pareja contra rivales de tu categoría, los <b>miércoles y jueves</b>.</li>
+          <li>El resultado cuenta cuando <b>ambas parejas lo confirman</b> en la app.</li>
+          <li>Sumando puntos y victorias <b>asciendes de categoría</b>.</li>
+        </ul>
+      </div>
+
+      <div class="rule-card league">
+        <h3><span class="ri">🥇</span> Playoffs y premios</h3>
+        <ul class="rule-list">
+          <li>El <b>Top de cada categoría</b> al cierre mensual clasifica a las <b>Llaves</b> (playoffs).</li>
+          <li>Las llaves son <b>eliminación directa</b> al mejor de 3 sets hasta la final.</li>
+          <li>Podio del mes: 🥇 oro, 🥈 plata, 🥉 bronce, con medalla en tu perfil.</li>
+        </ul>
+      </div>
+
+      <div class="rules-label">🎾 Reglas generales del pádel</div>
+
+      <div class="rule-card">
+        <h3><span class="ri">🔢</span> Puntuación</h3>
+        <ul class="rule-list">
+          <li>Se cuenta igual que en tenis: <b>15, 30, 40 y juego</b>. El cero se dice "nada".</li>
+          <li>En <b>40–40</b> ("iguales") se define con <b>ventaja</b> (2 puntos seguidos) o a <b>punto de oro</b>, donde quien gana ese punto se lleva el juego.</li>
+          <li>Un <b>set</b> se gana con 6 juegos y 2 de diferencia. En 6–6 se juega <b>tie-break</b> a 7 puntos.</li>
+          <li>El partido es al <b>mejor de 3 sets</b>.</li>
+        </ul>
+      </div>
+
+      <div class="rule-card">
+        <h3><span class="ri">🖐️</span> El saque</h3>
+        <ul class="rule-list">
+          <li>Se saca <b>por debajo de la cintura</b>, botando primero la pelota en el suelo detrás de la línea de saque.</li>
+          <li>Va en <b>diagonal (cruzado)</b> y debe botar dentro del cuadro de saque del rival.</li>
+          <li>Hay <b>dos intentos</b>. Si toca la red y cae buena, es <b>let</b> y se repite.</li>
+          <li>Tras botar bien, si pega en la <b>reja metálica</b> es falta; si pega en el <b>vidrio</b>, sigue en juego.</li>
+        </ul>
+      </div>
+
+      <div class="rule-card">
+        <h3><span class="ri">🧱</span> La pelota y las paredes</h3>
+        <ul class="rule-list">
+          <li>Tras <b>un bote</b> en tu suelo, puedes usar <b>tus propias paredes</b> para devolverla.</li>
+          <li>Debes devolverla <b>antes del segundo bote</b>.</li>
+          <li>Si tu tiro pega <b>directo en la reja o pared</b> del rival sin botar antes en su suelo, el <b>punto es tuyo</b>.</li>
+          <li>En pistas habilitadas puedes salir por las <b>puertas</b> a devolver una bola que salió.</li>
+        </ul>
+      </div>
+
+      <div class="rule-card">
+        <h3><span class="ri">⛔</span> Pierdes el punto si…</h3>
+        <ul class="rule-list">
+          <li>La pelota <b>bota dos veces</b> en tu campo.</li>
+          <li>La pelota <b>te toca</b> a ti o a tu ropa.</li>
+          <li>Tocas la <b>red o el poste</b>, o pasas la pala/cuerpo al campo rival.</li>
+          <li>La pelota pega <b>directo en tu reja o pared</b> antes de botar en el suelo.</li>
+        </ul>
+      </div>
+      <p class="note">Reglas generales basadas en el reglamento estándar de pádel (FIP). Las reglas del torneo son configurables por el club.</p>
+    </section>
+
+  </div>
+
+  <!-- Bottom nav -->
+  <div class="tabbar">
+    <button class="tab active" data-s="liga" onclick="go('liga')"><span class="ti">📋</span>Liga</button>
+    <button class="tab" data-s="retos" onclick="go('retos')"><span class="ti">⚔️</span>Retos</button>
+    <button class="tab central" data-s="llaves" onclick="go('llaves')"><span class="ti">🏆</span></button>
+    <button class="tab" data-s="reservas" onclick="go('reservas')"><span class="ti">🎾</span>Reservas</button>
+    <button class="tab" data-s="perfil" onclick="go('perfil')"><span class="ti">👤</span>Perfil</button>
+  </div>
+
+  <!-- ===== Bottom sheet: diseñar nuevo reto ===== -->
+  <div class="sheet-backdrop" id="sheetbd" onclick="closeReto()"></div>
+  <div class="sheet" id="sheet">
+    <div class="grab"></div>
+    <div class="sheet-head">
+      <h3>⚔️ Nuevo reto</h3>
+      <button class="x" onclick="closeReto()">✕</button>
+    </div>
+    <p class="sub">Arma tu pareja y reta a otra de tu categoría (6ª).</p>
+
+    <div class="field">
+      <label>Tu pareja</label>
+      <div class="chips" id="f-partner">
+        <span class="fchip fixed"><span class="d" style="background:#3b82f6">RB</span>Tú · Rodrigo B.</span>
+      </div>
+      <div class="chips" id="f-partner-pick" style="margin-top:8px">
+        <span class="fchip" onclick="pick(this)"><span class="d" style="background:#2ee6c5">MI</span>Mina</span>
+        <span class="fchip" onclick="pick(this)"><span class="d" style="background:#8b5cf6">JO</span>Joan</span>
+        <span class="fchip" onclick="pick(this)"><span class="d" style="background:#ff9f5c">AG</span>Agu</span>
+        <span class="fchip" onclick="pick(this)"><span class="d" style="background:#ff5c73">BR</span>Bryan</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Rival — elige la pareja</label>
+      <div class="rivalgrid" id="f-rival">
+        <div class="rivalcard" data-name="Agu / Jimena Q." onclick="pick(this)">
+          <span class="chk"></span><span class="rp">Agu / Jimena Q.</span><span class="rk">#1 · 760 pts</span>
+        </div>
+        <div class="rivalcard" data-name="JP / Joan" onclick="pick(this)">
+          <span class="chk"></span><span class="rp">JP / Joan</span><span class="rk">#4 · 650 pts</span>
+        </div>
+        <div class="rivalcard" data-name="Piero / Bryan" onclick="pick(this)">
+          <span class="chk"></span><span class="rp">Piero / Bryan</span><span class="rk">#5 · 610 pts</span>
+        </div>
+        <div class="rivalcard" data-name="Ale / Daniela" onclick="pick(this)">
+          <span class="chk"></span><span class="rp">Ale / Daniela</span><span class="rk">#6 · 580 pts</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Día</label>
+      <div class="chips" id="f-day">
+        <span class="fchip sel" onclick="pick(this)">📅 Miércoles</span>
+        <span class="fchip" onclick="pick(this)">📅 Jueves</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Hora</label>
+      <div class="chips" id="f-time">
+        <span class="fchip" onclick="pick(this)">18:00</span>
+        <span class="fchip sel" onclick="pick(this)">19:00</span>
+        <span class="fchip" onclick="pick(this)">20:00</span>
+        <span class="fchip" onclick="pick(this)">21:00</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Cancha</label>
+      <div class="chips" id="f-court">
+        <span class="fchip sel" onclick="pick(this)">🎾 Cancha 1</span>
+        <span class="fchip" onclick="pick(this)">🎾 Cancha 2</span>
+        <span class="fchip" onclick="pick(this)">🎾 Cancha 3</span>
+      </div>
+    </div>
+
+    <div class="format-note">🏆 Formato: al mejor de 3 sets · el resultado suma al ranking cuando ambas parejas lo confirman.</div>
+
+    <div class="sheet-foot">
+      <button class="btn ghost" onclick="closeReto()">Cancelar</button>
+      <button class="btn primary" onclick="sendReto()">Enviar reto →</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+  // ---------- Data from whiteboard ----------
+  const RANKINGS = {
+    '4':[
+      {n:'Erick',pts:940,mv:'up',d:2,streak:'🔥3',pj:22,av:'#c8ff3d'},
+      {n:'Juancho',pts:910,mv:'up',d:1,pj:20,av:'#3b82f6'},
+      {n:'Juanma',pts:865,mv:'dn',d:1,pj:19,av:'#2ee6c5'},
+      {n:'Andree',pts:820,mv:'eq',d:0,pj:18,av:'#8b5cf6'},
+      {n:'Marcelo',pts:790,mv:'up',d:3,pj:17,av:'#ff9f5c'},
+      {n:'Kevin',pts:730,mv:'dn',d:2,pj:16,av:'#ff5c73'}
+    ],
+    '5':[
+      {n:'Dibu',pts:880,mv:'up',d:1,streak:'🔥4',pj:21,av:'#c8ff3d'},
+      {n:'Carlos C.',pts:850,mv:'eq',d:0,pj:20,av:'#2ee6c5'},
+      {n:'Miguel W.',pts:815,mv:'up',d:2,pj:18,av:'#3b82f6'},
+      {n:'Joan',pts:780,mv:'up',d:4,pj:19,av:'#8b5cf6'},
+      {n:'JP',pts:740,mv:'dn',d:1,pj:16,av:'#ff9f5c'},
+      {n:'Alonso N.',pts:700,mv:'eq',d:0,pj:15,av:'#f472b6'}
+    ],
+    '6':[
+      {n:'Agu',pts:760,mv:'up',d:1,streak:'🔥2',pj:19,av:'#c8ff3d'},
+      {n:'Rodrigo B.',pts:720,mv:'up',d:2,me:true,streak:'🔥3',pj:18,av:'#3b82f6'},
+      {n:'Jimena Q.',pts:695,mv:'dn',d:1,pj:17,av:'#f472b6'},
+      {n:'Bryan',pts:650,mv:'up',d:1,pj:15,av:'#ff5c73'},
+      {n:'Piero',pts:610,mv:'eq',d:0,pj:14,av:'#ff9f5c'},
+      {n:'Daniela',pts:580,mv:'up',d:3,pj:13,av:'#2ee6c5'}
+    ]
+  };
+
+  function initials(name){
+    const p=name.replace(/\./g,'').split(' ');
+    return (p[0][0]+(p[1]?p[1][0]:(p[0][1]||''))).toUpperCase();
+  }
+  function medal(i){return i===0?'🥇':i===1?'🥈':i===2?'🥉':'';}
+  function mvIcon(mv,d){
+    if(mv==='up')return `<span class="mv up">▲ ${d}</span>`;
+    if(mv==='dn')return `<span class="mv dn">▼ ${d}</span>`;
+    return `<span class="mv eq">—</span>`;
+  }
+
+  function renderRank(cat){
+    const list=RANKINGS[cat];
+    document.getElementById('ranklist').innerHTML=list.map((p,i)=>`
+      <div class="rrow ${p.me?'me':''}">
+        <div class="pos p${i+1}">${medal(i)||('#'+(i+1))}</div>
+        <div class="pav" style="background:${p.av}">${initials(p.n)}</div>
+        <div class="pinfo">
+          <div class="pn">${p.n} ${p.me?'<span class="pill" style="background:rgba(200,255,61,.15);color:var(--lime);padding:2px 7px">Tú</span>':''}</div>
+          <div class="ps">${mvIcon(p.mv,p.d)} · ${p.pj} PJ ${p.streak?'· <span class="streak">'+p.streak+'</span>':''}</div>
+        </div>
+        <div class="pts"><b>${p.pts}</b><small>puntos</small></div>
+      </div>`).join('');
+  }
+
+  function setCat(el,cat){
+    document.querySelectorAll('#s-liga .cat').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    renderRank(cat);
+  }
+  // ----- Nuevo reto (bottom sheet) -----
+  function pick(el){
+    const group=el.parentElement;
+    group.querySelectorAll('.sel').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel');
+  }
+  function openReto(){
+    document.getElementById('sheetbd').classList.add('show');
+    document.getElementById('sheet').classList.add('show');
+  }
+  function closeReto(){
+    document.getElementById('sheetbd').classList.remove('show');
+    document.getElementById('sheet').classList.remove('show');
+  }
+  function sendReto(){
+    const partner=document.querySelector('#f-partner-pick .sel');
+    const rival=document.querySelector('#f-rival .sel');
+    if(!partner){toast('⚠️ Elige tu compañero de pareja');return;}
+    if(!rival){toast('⚠️ Elige la pareja rival');return;}
+    const day=(document.querySelector('#f-day .sel')||{}).textContent||'';
+    const time=(document.querySelector('#f-time .sel')||{}).textContent||'';
+    closeReto();
+    setTimeout(()=>toast('🎾 Reto enviado a '+rival.dataset.name+' · '+day.replace('📅 ','')+' '+time),320);
+  }
+
+  // ----- Llaves por categoría (mapeadas desde la data del ranking) -----
+  const BRACKETS = {
+    '4':{
+      cuartos:[
+        {a:'Erick / Marcelo',sa:2,b:'Alonso N. / Piero',sb:0,st:'done'},
+        {a:'Juancho / Andree',sa:2,b:'Álvaro R. / Secochi',sb:1,st:'done'},
+        {a:'Juanma / Kevin',sa:2,b:'Álvaro J. / Fabricio',sb:0,st:'done'},
+        {a:'Dibu / Carlos C.',b:'Joan / JP',st:'live',note:'● HOY 20:00'}
+      ],
+      semis:[
+        {a:'Erick / Marcelo',b:'Juancho / Andree',st:'sched',note:'Vie 26 Jul'},
+        {a:'Juanma / Kevin',b:'Ganador C4',st:'sched',note:'Vie 26 Jul'}
+      ],
+      final:{a:'Por definir',b:'Por definir',st:'sched',note:'Dom 28 Jul'}
+    },
+    '5':{
+      cuartos:[
+        {a:'Dibu / Carlos C.',sa:2,b:'Agu / Fer',sb:0,st:'done'},
+        {a:'Miguel W. / Joan',sa:2,b:'Bryan / Piero',sb:1,st:'done'},
+        {a:'JP / Alonso N.',sa:2,b:'Marcelo / Nico',sb:0,st:'done'},
+        {a:'Kevin / Andree',b:'Erick / Diego',st:'live',note:'● HOY 20:00'}
+      ],
+      semis:[
+        {a:'Dibu / Carlos C.',b:'Miguel W. / Joan',st:'sched',note:'Vie 26 Jul'},
+        {a:'JP / Alonso N.',b:'Ganador C4',st:'sched',note:'Vie 26 Jul'}
+      ],
+      final:{a:'Por definir',b:'Por definir',st:'sched',note:'Dom 28 Jul'}
+    },
+    '6':{
+      cuartos:[
+        {a:'Agu / Jimena Q.',sa:2,b:'Ale / Daniela',sb:0,st:'done'},
+        {a:'Rodrigo B. / Mina',sa:2,b:'Piero / Bryan',sb:1,st:'done'},
+        {a:'Nico / Sofía',sa:2,b:'Álvaro J. / Fabricio',sb:0,st:'done'},
+        {a:'JP / Joan',b:'Álvaro R. / Secochi',st:'live',note:'● HOY 20:00'}
+      ],
+      semis:[
+        {a:'Agu / Jimena Q.',b:'Rodrigo B. / Mina',st:'sched',note:'Vie 26 Jul'},
+        {a:'Nico / Sofía',b:'Ganador C4',st:'sched',note:'Vie 26 Jul'}
+      ],
+      final:{a:'Por definir',b:'Por definir',st:'sched',note:'Dom 28 Jul'}
+    }
+  };
+
+  function isTbd(name){return name==='Por definir'||/^Ganador/.test(name);}
+  function bTeam(name,score,win){
+    const sc=(score===undefined||score===null)?'—':score;
+    return `<div class="mteam ${win?'win':''} ${isTbd(name)?'tbd':''}"><span class="mn">${name}</span><span class="msc">${sc}</span></div>`;
+  }
+  function bMatch(m){
+    let w1=false,w2=false;
+    if(m.st==='done'){ (m.sa>m.sb)?w1=true:w2=true; }
+    let tag;
+    if(m.st==='done')tag='<div class="mtag done">✓ Finalizado</div>';
+    else if(m.st==='live')tag=`<div class="mtag live">${m.note||'● En vivo'}</div>`;
+    else tag=`<div class="mtag">${m.note||''}</div>`;
+    return `<div class="match">${bTeam(m.a,m.sa,w1)}${bTeam(m.b,m.sb,w2)}${tag}</div>`;
+  }
+  function renderBracket(cat){
+    const B=BRACKETS[cat];
+    document.getElementById('bracket').innerHTML=`
+      <div class="round"><h4>Cuartos</h4>${B.cuartos.map(bMatch).join('')}</div>
+      <div class="round"><h4>Semifinales</h4>${B.semis.map(bMatch).join('')}</div>
+      <div class="round"><h4>Final</h4>${bMatch(B.final)}</div>
+      <div class="round"><h4>Campeón</h4>
+        <div class="champ"><div class="cup">🏆</div><div class="lbl">CAMPEÓN ${cat}ª</div><div class="who">Por definir</div></div>
+      </div>`;
+  }
+
+  function setBracketCat(el,cat){
+    document.querySelectorAll('#s-llaves .cat').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    renderBracket(cat);
+    toast('Llave de '+cat+'ª categoría · playoffs en curso');
+  }
+  function setSeg(el,which){
+    document.querySelectorAll('#s-retos .seg button').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('retos-pend').style.display=which==='pend'?'block':'none';
+    document.getElementById('retos-done').style.display=which==='done'?'block':'none';
+  }
+  function go(s){
+    document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));
+    document.getElementById('s-'+s).classList.add('active');
+    document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active',t.dataset.s===s));
+    document.querySelector('.screens').scrollTop=0;
+  }
+  let tt;
+  function toast(msg){
+    const t=document.getElementById('toast');
+    t.textContent=msg;t.classList.add('show');
+    clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2200);
+  }
+
+  // ----- Reservas (interactivo) -----
+  const COURTS=[
+    {id:1,name:'Cancha 1 · Cristal',type:'Indoor',price:60},
+    {id:2,name:'Cancha 2 · Panorámica',type:'Outdoor',price:50},
+    {id:3,name:'Cancha 3 · Muro',type:'Indoor',price:60}
+  ];
+  const TIMES=['18:00','19:00','20:00','21:00'];
+  const AVAIL={
+    hoy:    {1:[false,true,true,false], 2:[true,true,false,true],  3:[false,false,true,true]},
+    manana: {1:[true,true,true,true],   2:[true,false,true,true],  3:[false,true,true,false]},
+    vie25:  {1:[false,false,true,false], 2:[true,true,false,false], 3:[true,false,false,true]},
+    sab26:  {1:[true,true,false,true],  2:[false,true,true,true],  3:[true,false,true,false]}
+  };
+  let rDay='hoy', rSel=null;
+  function renderReservas(){
+    const av=AVAIL[rDay];
+    document.getElementById('courts').innerHTML=COURTS.map(c=>{
+      const sel=rSel&&rSel.court===c.id;
+      const slots=TIMES.map((t,i)=>{
+        const free=av[c.id][i];
+        const isSel=rSel&&rSel.court===c.id&&rSel.ti===i;
+        return free
+          ? `<button class="slot free ${isSel?'sel':''}" onclick="pickSlot(${c.id},${i})">${t}</button>`
+          : `<span class="slot taken">${t}</span>`;
+      }).join('');
+      return `<div class="court ${sel?'active':''}">
+        <div class="cimg">🎾</div>
+        <div style="flex:1">
+          <div style="font-weight:700">${c.name}</div>
+          <div style="color:var(--muted);font-size:11px">${c.type} · S/ ${c.price}/hora</div>
+          <div class="slots">${slots}</div>
+        </div>
+      </div>`;
+    }).join('');
+    const btn=document.getElementById('reserveBtn');
+    if(rSel){
+      const c=COURTS.find(x=>x.id===rSel.court);
+      btn.disabled=false;
+      btn.textContent=`Reservar ${c.name.split(' · ')[0]} · ${TIMES[rSel.ti]} · S/ ${c.price}`;
+    }else{
+      btn.disabled=true;
+      btn.textContent='Elige un horario disponible';
+    }
+  }
+  function pickSlot(court,ti){ rSel={court,ti}; renderReservas(); }
+  function setDay(el,day){
+    document.querySelectorAll('#r-days .cat').forEach(c=>c.classList.remove('active'));
+    el.classList.add('active');
+    rDay=day; rSel=null; renderReservas();
+  }
+  function confirmReserva(){
+    if(!rSel)return;
+    const c=COURTS.find(x=>x.id===rSel.court);
+    const t=TIMES[rSel.ti];
+    AVAIL[rDay][c.id][rSel.ti]=false;
+    rSel=null; renderReservas();
+    toast(`✅ Reservado · ${c.name.split(' · ')[0]} · ${t} · S/ ${c.price}`);
+  }
+
+  // ----- Segmentos de Reservas -----
+  function setResvSeg(el,which){
+    document.querySelectorAll('#resv-seg button').forEach(b=>b.classList.remove('active'));
+    el.classList.add('active');
+    document.getElementById('resv-canchas').style.display   = which==='canchas'?'block':'none';
+    document.getElementById('resv-abiertas').style.display  = which==='abiertas'?'block':'none';
+    document.getElementById('resv-servicios').style.display = which==='servicios'?'block':'none';
+  }
+
+  // ----- Partidas abiertas (matchmaker por nivel) -----
+  const YOURLVL=3.8;
+  const PAL=['#c8ff3d','#2ee6c5','#3b82f6','#8b5cf6','#ff9f5c','#ff5c73','#f472b6'];
+  const OPENMATCHES=[
+    {court:'Cancha 2 · Panorámica', when:'Hoy · 19:00 · 1h', price:25, min:3.5,max:4.2,
+     players:[{n:'Agu',lv:3.9},{n:'Bryan',lv:3.7},null,null]},
+    {court:'Cancha 1 · Cristal', when:'Mañana · 20:00 · 1h', price:30, min:4.0,max:4.8,
+     players:[{n:'Erick',lv:4.5},{n:'Marcelo',lv:4.3},{n:'Joan',lv:4.4},null]},
+    {court:'Cancha 3 · Muro', when:'Vie 25 · 18:00 · 1h', price:25, min:2.8,max:3.6,
+     players:[{n:'Piero',lv:3.2},{n:'Daniela',lv:3.1},null,null]}
+  ];
+  function omInitials(n){return n==='Tú'?'RB':n.slice(0,2).toUpperCase();}
+  function renderOpen(){
+    document.getElementById('openmatches').innerHTML=OPENMATCHES.map((m,mi)=>{
+      const free=m.players.filter(p=>!p).length;
+      const fits=YOURLVL>=m.min&&YOURLVL<=m.max;
+      const already=m.players.some(p=>p&&p.you);
+      const slots=m.players.map((p,i)=>{
+        if(!p) return `<div class="om-slot free"><div class="oav">+</div><div class="onm">Libre</div><div class="olv">&nbsp;</div></div>`;
+        return `<div class="om-slot ${p.you?'you':''}"><div class="oav" style="background:${p.you?'#c8ff3d':PAL[(mi*4+i)%PAL.length]}">${omInitials(p.n)}</div><div class="onm">${p.n}</div><div class="olv">Niv ${p.lv}</div></div>`;
+      }).join('');
+      let cta;
+      if(already) cta=`<button class="btn ghost" style="width:100%" disabled>✓ Ya estás inscrito</button>`;
+      else if(free===0) cta=`<button class="btn ghost" style="width:100%" disabled>Partida completa</button>`;
+      else if(fits) cta=`<button class="btn primary" style="width:100%" onclick="joinOpen(${mi})">Unirme · ${free} ${free===1?'lugar':'lugares'}</button>`;
+      else cta=`<button class="btn ghost" style="width:100%" disabled>Fuera de tu nivel (3.8)</button>`;
+      return `<div class="omatch">
+        <div class="om-top"><span class="om-venue">🎾 ${m.court}</span><span class="om-lvl">Nivel ${m.min}–${m.max}</span></div>
+        <div class="om-meta">${m.when} · S/ ${m.price} c/u</div>
+        <div class="om-players">${slots}</div>
+        <div class="om-fit ${fits?'ok':'no'}">${fits?'✓ Tu nivel 3.8 encaja en esta partida':'⚠️ Tu nivel 3.8 no encaja — busca otra pareja'}</div>
+        ${cta}
+      </div>`;
+    }).join('');
+  }
+  function joinOpen(mi){
+    const m=OPENMATCHES[mi];
+    const idx=m.players.findIndex(p=>!p);
+    if(idx<0)return;
+    m.players[idx]={n:'Tú',lv:YOURLVL,you:true};
+    renderOpen();
+    toast('🎾 Te uniste a la partida en '+m.court.split(' · ')[0]+' · '+m.when.split(' · ')[1]);
+  }
+
+  renderRank('4');
+  renderBracket('6');
+  renderReservas();
+  renderOpen();
+</script>
+</body>
+</html>
